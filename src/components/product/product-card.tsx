@@ -28,12 +28,12 @@ export function ProductCard({ product }: { product: Product }) {
       {/* Image */}
       <div
         className="relative h-[260px] sm:h-[300px] md:h-[340px] overflow-hidden"
-        style={{ background: product.accent === "bourbon" ? "#F2E8D0" : product.accent === "colombia" ? "#1A0808" : "#120404" }}
+        style={{ background: product.accent === "bourbon" ? "#E8D4A8" : product.accent === "colombia" ? "#0E0E0E" : "#1A0808" }}
       >
         <Image
           src={product.image} alt={`${product.name} — Maximilien Coffee`}
           fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
+          className="object-contain transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
           style={{ filter: product.accent !== "bourbon" ? "brightness(0.86)" : undefined }}
         />
         {/* SCA */}

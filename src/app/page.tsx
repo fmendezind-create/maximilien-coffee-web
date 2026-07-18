@@ -1,6 +1,6 @@
 import { Nav } from "@/components/layout/nav";
 import { Footer } from "@/components/layout/footer";
-import { Hero } from "@/components/home/hero";
+import { HeroSlider } from "@/components/home/hero-slider";
 import { TrustBar } from "@/components/home/trust-bar";
 import { Collection } from "@/components/home/collection";
 import { Origin } from "@/components/home/origin";
@@ -11,7 +11,7 @@ export default function HomePage() {
     <>
       <Nav />
       <main>
-        <Hero />
+        <HeroSlider />
         <TrustBar />
         <Collection />
         <Origin />

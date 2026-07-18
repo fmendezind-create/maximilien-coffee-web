@@ -1,82 +1,63 @@
 @import "tailwindcss";
 
-/* ────────────────────────────────────────────────────────
-   MAXIMILIEN COFFEE — Design tokens
-   Paleta extraída del empaque real (mandala dorado sobre
-   fondo naranja/café). Tipografía: Cormorant Garamond para
-   display (autoridad, tradición) + DM Sans para UI.
-   ──────────────────────────────────────────────────────── */
+/*
+  MAXIMILIEN COFFEE — Design System
+  Tipografía: Playfair Display (display/títulos) + Inter (UI/body)
+  Inspiración: Lavazza — limpio, premium, cinematográfico
+*/
 
 @theme {
-  /* Marca — neutros cálidos */
-  --color-gold: #c8a84a;
-  --color-gold-light: #e8c870;
-  --color-gold-pale: #f5e4a8;
-  --color-ink: #0a0704;
-  --color-ink-2: #1a1408;
-  --color-brown: #6b4020;
-  --color-brown-light: #9b6535;
-  --color-cream: #faf4e6;
-  --color-cream-2: #f2e8d0;
-  --color-cream-3: #e4d4b0;
-  --color-white-warm: #fdfaf2;
-  --color-gray-warm: #f4f0e8;
+  --color-gold:         #C8A84A;
+  --color-gold-light:   #E8C870;
+  --color-gold-pale:    #F5E4A8;
+  --color-ink:          #0A0704;
+  --color-ink-2:        #1A1408;
+  --color-brown:        #6B4020;
+  --color-brown-light:  #9B6535;
+  --color-cream:        #FAF4E6;
+  --color-cream-2:      #F2E8D0;
+  --color-cream-3:      #E4D4B0;
+  --color-white-warm:   #FDFAF2;
+  --color-gray-warm:    #F4F0E8;
+  --color-bourbon:      #C8A84A;
+  --color-bourbon-dark: #A88030;
+  --color-colombia:     #8B1A1A;
+  --color-colombia-dark:#6B0E0E;
+  --color-blend:        #9B2020;
+  --color-blend-dark:   #7A1010;
 
-  /* Acentos por producto */
-  --color-bourbon: #c8a84a;
-  --color-bourbon-dark: #a88030;
-  --color-colombia: #8b1a1a;
-  --color-colombia-dark: #6b0e0e;
-  --color-blend: #9b2020;
-  --color-blend-dark: #7a1010;
+  /* Tipografía estilo Lavazza */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
 
-  /* Tipografía — conectada a next/font via CSS variables (ver layout.tsx) */
-  --font-display: var(--font-cormorant), Georgia, serif;
-  --font-body: var(--font-dm-sans), system-ui, sans-serif;
-
-  /* Easing de marca — usado en todas las transiciones premium */
   --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
   body {
     background: var(--color-white-warm);
     color: var(--color-ink);
     font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
   }
-  img {
-    display: block;
-    max-width: 100%;
-  }
+  img { display: block; max-width: 100%; }
+  h1, h2, h3 { font-family: var(--font-display); }
 }
 
 @layer utilities {
-  .font-display {
-    font-family: var(--font-display);
-  }
-  .ease-brand {
-    transition-timing-function: var(--ease-brand);
-  }
+  .font-display { font-family: var(--font-display); }
+  .ease-brand   { transition-timing-function: var(--ease-brand); }
 }
 
-/* Scroll reveal — usado por el hook useReveal en toda la app */
+/* Scroll reveal */
 .reveal {
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.65s var(--ease-brand), transform 0.65s var(--ease-brand);
+  transition: opacity .65s var(--ease-brand), transform .65s var(--ease-brand);
 }
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
+.reveal.is-visible { opacity: 1; transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
+  .reveal { opacity: 1; transform: none; transition: none; }
 }
