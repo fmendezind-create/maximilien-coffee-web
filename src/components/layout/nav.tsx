@@ -101,6 +101,7 @@ export function Nav({ breadcrumb }: NavProps) {
             { href: "/cafes/variedad-colombia", label: "Variedad Colombia", sub: true },
             { href: "/cafes/blend", label: "Blend", sub: true },
             { href: "/origen", label: "Origen", sub: false },
+            { href: "/barista", label: "Barista IA ✦", sub: false },
             { href: "/suscripcion", label: "Suscripción", sub: false },
           ].map(link => (
             <Link

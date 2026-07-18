@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function BaristaCTA() {
   return (
     <div
@@ -18,12 +20,12 @@ export function BaristaCTA() {
           </p>
         </div>
       </div>
-      <button
-        className="w-full md:w-auto px-8 py-4 bg-ink text-gold-pale text-[11px] font-semibold tracking-[0.16em] uppercase whitespace-nowrap hover:bg-gold hover:text-ink transition-colors active:scale-[0.98]"
-        aria-label="Abrir chat con el Barista IA de Maximilien Coffee"
+      <Link
+        href="/barista"
+        className="w-full md:w-auto text-center px-8 py-4 bg-ink text-gold-pale text-[11px] font-semibold tracking-[0.16em] uppercase whitespace-nowrap hover:bg-gold hover:text-ink transition-colors no-underline"
       >
         Hablar con el Barista →
-      </button>
+      </Link>
     </div>
   );
 }
