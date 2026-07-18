@@ -16,6 +16,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Anthropic requiere que los mensajes empiecen con role: "user"
+    // Filtramos el primer mensaje si es "assistant" (el mensaje inicial del quiz)
+    let filteredMessages = messages;
+    if (filteredMessages.length > 0 && filteredMessages[0].role === "assistant") {
+      filteredMessages = filteredMessages.slice(1);
+    }
+    // Si después del filtro no hay mensajes de usuario, añadimos uno
+    if (filteredMessages.length === 0 || filteredMessages[0].role !== "user") {
+      filteredMessages = [{ role: "user", content: "Hola" }, ...filteredMessages];
+    }
+
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
@@ -27,7 +38,7 @@ export async function POST(req: NextRequest) {
         model: "claude-sonnet-4-6",
         max_tokens: 1000,
         system,
-        messages,
+        messages: filteredMessages,
       }),
     });
 
