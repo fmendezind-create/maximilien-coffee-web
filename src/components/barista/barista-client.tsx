@@ -208,14 +208,21 @@ export function BaristaClient() {
         }),
       });
 
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        console.error("API error:", response.status, errData);
+        throw new Error(`HTTP ${response.status}: ${errData.error || "unknown"}`);
+      }
+
       const data = await response.json();
       const reply = data.text || "Lo siento, hubo un problema. Escríbenos por WhatsApp al +57 300 123 4567.";
 
       setMessages(prev => [...prev, { role: "assistant", content: reply }]);
-    } catch {
+    } catch (err) {
+      console.error("Barista chat error:", err);
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "Tuve un problema de conexión. Puedes escribirnos directamente por WhatsApp al +57 300 123 4567."
+        content: "Lo siento, tuve un problema técnico. Escríbenos por WhatsApp al +57 300 123 4567 y te ayudamos de inmediato."
       }]);
     } finally {
       setLoading(false);
