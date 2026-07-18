@@ -58,7 +58,7 @@ export function CheckoutClient() {
 
   function handleSubmit() {
     // Validar campos requeridos
-    const required = ["firstName", "lastName", "email", "phone", "address", "city", "dept"];
+    const required = ["firstName", "lastName", "email", "phone"];
     const newErrors: Record<string, boolean> = {};
     let ok = true;
     required.forEach((field) => {
