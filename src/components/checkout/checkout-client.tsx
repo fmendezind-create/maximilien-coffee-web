@@ -73,72 +73,23 @@ export function CheckoutClient() {
     setSubmitting(true);
 
     if (payment === "wompi") {
-      // ── PAGO CON WOMPI ──────────────────────────────────────────
-      // Generamos referencia única para este pedido
+      // ── PAGO CON WOMPI — redirect directo (más confiable) ───────
       const orderRef = "MC-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
-      
-      // Wompi Widget — se inyecta el script y abre el modal de pago
-      const script = document.createElement("script");
-      script.src = "https://checkout.wompi.co/widget.js";
-      script.setAttribute("data-render", "button");
-      script.setAttribute("data-public-key", "pub_test_un2Yf64uawKbkcxNjTtB4jPIVPIlpCyk");
-      script.setAttribute("data-currency", "COP");
-      // Wompi recibe el monto en centavos (x100)
-      script.setAttribute("data-amount-in-cents", String(total * 100));
-      script.setAttribute("data-reference", orderRef);
-      script.setAttribute("data-customer-data:email", form.email);
-      script.setAttribute("data-customer-data:full-name", `${form.firstName} ${form.lastName}`);
-      script.setAttribute("data-customer-data:phone-number", form.phone.replace(/\D/g, ""));
-      script.setAttribute("data-customer-data:phone-number-prefix", "+57");
-      // Redirige a confirmación después del pago exitoso
-      script.setAttribute(
-        "data-redirect-url",
-        `${window.location.origin}/checkout/confirmacion?order=${orderRef}`
-      );
+      const redirectUrl = `${window.location.origin}/checkout/confirmacion?order=${orderRef}`;
 
-      // Crear contenedor temporal invisible para el widget
-      const container = document.createElement("div");
-      container.id = "wompi-container";
-      container.style.display = "none";
-      document.body.appendChild(container);
-      container.appendChild(script);
+      const params = new URLSearchParams({
+        "public-key": "pub_test_un2Yf64uawKbkcxNjTtB4jPIVPIlpCyk",
+        currency: "COP",
+        "amount-in-cents": String(total * 100),
+        reference: orderRef,
+        "customer-data:email": form.email,
+        "customer-data:full-name": `${form.firstName} ${form.lastName}`,
+        "customer-data:phone-number": form.phone.replace(/[^0-9]/g, ""),
+        "customer-data:phone-number-prefix": "+57",
+        "redirect-url": redirectUrl,
+      });
 
-      // Esperar a que cargue el script y hacer click automático
-      script.onload = () => {
-        setTimeout(() => {
-          const btn = container.querySelector("button");
-          if (btn) {
-            btn.click();
-          } else {
-            // Fallback: abrir directamente el checkout de Wompi
-            const params = new URLSearchParams({
-              "public-key": "pub_test_un2Yf64uawKbkcxNjTtB4jPIVPIlpCyk",
-              currency: "COP",
-              "amount-in-cents": String(total * 100),
-              reference: orderRef,
-              "customer-data:email": form.email,
-              "customer-data:full-name": `${form.firstName} ${form.lastName}`,
-              "redirect-url": `${window.location.origin}/checkout/confirmacion?order=${orderRef}`,
-            });
-            window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
-          }
-          setSubmitting(false);
-        }, 800);
-      };
-
-      script.onerror = () => {
-        // Si falla cargar el script, redirigir directamente
-        const params = new URLSearchParams({
-          "public-key": "pub_test_un2Yf64uawKbkcxNjTtB4jPIVPIlpCyk",
-          currency: "COP",
-          "amount-in-cents": String(total * 100),
-          reference: orderRef,
-          "customer-data:email": form.email,
-          "redirect-url": `${window.location.origin}/checkout/confirmacion?order=${orderRef}`,
-        });
-        window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
-        setSubmitting(false);
-      };
+      window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
 
     } else {
       // ── OTROS MÉTODOS (Nequi, PSE, Efectivo) ────────────────────
