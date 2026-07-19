@@ -17,6 +17,7 @@ export function Footer() {
           { href: "/cafes", label: "Catálogo" },
           { href: "/origen", label: "Origen" },
         { href: "/barista", label: "Barista IA" },
+        { href: "/blog", label: "Blog" },
         { href: "/suscripcion", label: "Suscripción" },
         ].map(l => (
           <Link key={l.href} href={l.href} className="text-[11px] text-cream/30 hover:text-cream/65 transition-colors no-underline">{l.label}</Link>
