@@ -211,7 +211,7 @@ async function sendConfirmationEmail({
       Authorization: `Bearer ${resendKey}`,
     },
     body: JSON.stringify({
-      from: "Maximilien Coffee <pedidos@maximiliencoffee.com>",
+      from: "Maximilien Coffee <onboarding@resend.dev>",
       to: [email],
       subject: `✓ Pedido confirmado #${reference} — Maximilien Coffee`,
       html,
