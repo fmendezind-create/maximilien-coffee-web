@@ -71,7 +71,7 @@ export function CheckoutClient() {
     }
   }
 
-  function handlePay() {
+  async function handlePay() {
     const required = ["firstName", "lastName", "email", "phone"];
     const newErrors: Record<string, boolean> = {};
     let ok = true;
@@ -82,17 +82,37 @@ export function CheckoutClient() {
     if (!ok) return;
 
     setSubmitting(true);
+
     const orderRef = "MC-" + Date.now();
+    const amountInCents = total * 100;
+    const currency = "COP";
+    const redirectUrl = `${window.location.origin}/checkout/confirmacion?order=${orderRef}`;
+
+    // Generar firma de integridad via API route (nunca exponer la llave en el frontend)
+    let signature = "";
+    try {
+      const res = await fetch("/api/wompi-signature", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference: orderRef, amountInCents, currency }),
+      });
+      const data = await res.json();
+      signature = data.signature ?? "";
+    } catch {
+      console.error("Error generando firma");
+    }
+
     const params = new URLSearchParams({
       "public-key": "pub_test_un2Yf64uawKbkcxNjTtB4jPIVPIlpCyk",
-      currency: "COP",
-      "amount-in-cents": String(total * 100),
+      currency,
+      "amount-in-cents": String(amountInCents),
       reference: orderRef,
+      "signature:integrity": signature,
       "customer-data:email": form.email,
       "customer-data:full-name": `${form.firstName} ${form.lastName}`,
       "customer-data:phone-number": form.phone.replace(/[^0-9]/g, ""),
       "customer-data:phone-number-prefix": "+57",
-      "redirect-url": `${window.location.origin}/checkout/confirmacion?order=${orderRef}`,
+      "redirect-url": redirectUrl,
     });
     window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
   }
