@@ -44,7 +44,7 @@ export function ConfirmacionClient({ params }: Props) {
         sessionStorage.removeItem("mc_customer");
       })
       .catch(console.error);
-  }, }, [isApproved, orderNum]);
+  }, [isApproved, orderNum]);
 
   return (
     <div className="max-w-[520px] mx-auto px-6 py-20 text-center">
