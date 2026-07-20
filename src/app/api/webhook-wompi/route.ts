@@ -1,4 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, x-event-checksum",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: CORS_HEADERS });
+}
 import crypto from "crypto";
 
 // Verifica la firma del webhook de Wompi
@@ -15,19 +25,19 @@ export async function POST(req: NextRequest) {
 
     // Verificar firma si hay secret configurado
     if (secret && !verifyWompiSignature(body, signature, secret)) {
-      return NextResponse.json({ error: "Firma inválida" }, { status: 401 });
+      return NextResponse.json({ error: "Firma inválida" }, { status: 401, headers: CORS_HEADERS });
     }
 
     const event = JSON.parse(body);
 
     // Solo procesar transacciones aprobadas
     if (event?.event !== "transaction.updated") {
-      return NextResponse.json({ ok: true });
+      return NextResponse.json({ ok: true }, { headers: CORS_HEADERS });
     }
 
     const tx = event?.data?.transaction;
     if (!tx || tx.status !== "APPROVED") {
-      return NextResponse.json({ ok: true });
+      return NextResponse.json({ ok: true }, { headers: CORS_HEADERS });
     }
 
     // Extraer datos del pedido
@@ -41,10 +51,10 @@ export async function POST(req: NextRequest) {
       await sendConfirmationEmail({ email, name, reference, amount, payMethod });
     }
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true }, { headers: CORS_HEADERS });
   } catch (err) {
     console.error("Webhook error:", err);
-    return NextResponse.json({ error: "Error interno" }, { status: 500 });
+    return NextResponse.json({ error: "Error interno" }, { status: 500, headers: CORS_HEADERS });
   }
 }
 

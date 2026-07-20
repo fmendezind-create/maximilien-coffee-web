@@ -2,7 +2,7 @@ export type Accent = "bourbon" | "colombia" | "blend";
 export interface Variant { weight: string; price: number; }
 export interface Product {
   slug: string; accent: Accent; badge: string; kicker: string;
-  name: string; variety: string; process: "Natural" | "Natural" | "Lavado";
+  name: string; variety: string; process: "Natural" | "Honey" | "Lavado";
   origin: string; altitude: string; roast: string;
   intensity: "Suave — media" | "Media" | "Media — alta";
   sca: number; notes: string[]; variants: Variant[];
@@ -19,12 +19,12 @@ export const ACCENT_COLORS: Record<Accent, { base: string; dark: string; pale: s
 export const PRODUCTS: Product[] = [
   {
     slug: "bourbon-rosado", accent: "bourbon",
-    badge: "Herencia Opita", kicker: "Bolsa dorada",
+    badge: "La joya", kicker: "Bolsa dorada",
     name: "Bourbon Rosado", variety: "Bourbon Rosado", process: "Natural",
     origin: "Santa María, Huila", altitude: "2.000 m.s.n.m.",
     roast: "Media", intensity: "Suave — media", sca: 92,
-    notes: ["Frutos amarillos", "Panela", "Jazmín", "Cacao fino"],
-    variants: [{ weight: "250g", price: 31900 }, { weight: "454g", price: 54900 }],
+    notes: ["Frutos amarillos", "Panela", "Jazmín", "Bergamota", "Cacao fino"],
+    variants: [{ weight: "250g", price: 52000 }, { weight: "454g", price: 78000 }],
     reviewCount: 48, rating: 5,
     image: "/images/bourbon-main.jpg",
     gallery: ["/images/bourbon-1.jpg", "/images/bourbon-2.jpg"],
@@ -39,15 +39,15 @@ export const PRODUCTS: Product[] = [
     name: "Variedad Colombia", variety: "Colombia", process: "Natural",
     origin: "Santa María, Huila", altitude: "1.900 m.s.n.m.",
     roast: "Media", intensity: "Media", sca: 87,
-    notes: ["Cítrico", "Durazno", "Naranja", "Miel"],
-    variants: [{ weight: "250g", price: 29900 }, { weight: "454g", price: 49900 }],
+    notes: ["Cítrico", "Durazno", "Chocolate blanco", "Naranja", "Miel"],
+    variants: [{ weight: "250g", price: 44000 }, { weight: "454g", price: 66000 }],
     reviewCount: 32, rating: 5,
     image: "/images/colombia-main.jpg",
     gallery: ["/images/colombia-1.jpg", "/images/colombia-2.jpg"],
     storyTitle: "Por qué es especial",
     storyBody: "La Variedad Colombia fue desarrollada por Cenicafé como una alternativa resistente a la roya que mantiene la calidad del Caturra. Bien cultivada a gran altitud y procesada en honey, produce tazas extraordinarias — ácidas, jugosas y complejas. Este lote a 1.900 m.s.n.m. en el Huila lo demuestra con 89 puntos SCA.",
-    processTitle: "Proceso natural",
-    processBody: "Las cerezas se secan enteras al sol durante 25–30 días sin remover la pulpa. El azúcar de la fruta fermenta lentamente y penetra el grano — de ahí vienen las notas frutales y la dulzura característica.",
+    processTitle: "Proceso honey",
+    processBody: "Se retira la pulpa pero se deja parte del mucílago adherido al grano durante el secado. Esa capa dulce fermenta suavemente, aportando notas de miel, fruta y caramelo.",
   },
   {
     slug: "blend", accent: "blend",
@@ -55,8 +55,8 @@ export const PRODUCTS: Product[] = [
     name: "Blend", variety: "Castillo · Caturra · Papayo", process: "Lavado",
     origin: "Santa María, Huila", altitude: "1.800 m.s.n.m.",
     roast: "Media oscura", intensity: "Media — alta", sca: 82,
-    notes: ["Caramelo", "Avellana", "Chocolate", "Nuez"],
-    variants: [{ weight: "250g", price: 26900 }, { weight: "454g", price: 44900 }],
+    notes: ["Caramelo", "Avellana", "Chocolate", "Nuez", "Dulce equilibrado"],
+    variants: [{ weight: "250g", price: 36000 }, { weight: "454g", price: 54000 }],
     reviewCount: 61, rating: 5,
     image: "/images/blend-main.jpg",
     gallery: ["/images/blend-1.jpg", "/images/blend-2.jpg"],
