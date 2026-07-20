@@ -88,7 +88,38 @@ export function CheckoutClient() {
     const currency = "COP";
     const redirectUrl = `${window.location.origin}/checkout/confirmacion?order=${orderRef}`;
 
-    // Generar firma de integridad via API route (nunca exponer la llave en el frontend)
+    // 1. Registrar pedido en el backend
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reference: orderRef,
+          customer_name: `${form.firstName} ${form.lastName}`,
+          customer_email: form.email,
+          customer_phone: form.phone,
+          customer_address: form.address,
+          customer_city: form.city,
+          customer_dept: form.dept,
+          items: items.map(i => ({
+            slug: i.slug,
+            name: i.name,
+            weight: i.weight,
+            grind: i.grind,
+            quantity: i.quantity,
+            unit_price: i.unitPrice,
+          })),
+          subtotal,
+          discount,
+          total,
+          notes: form.notes,
+        }),
+      });
+    } catch {
+      console.error("Error registrando pedido en backend");
+    }
+
+    // 2. Generar firma de integridad via API route
     let signature = "";
     try {
       const res = await fetch("/api/wompi-signature", {
