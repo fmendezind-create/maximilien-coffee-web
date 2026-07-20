@@ -2,7 +2,7 @@ export type Accent = "bourbon" | "colombia" | "blend";
 export interface Variant { weight: string; price: number; }
 export interface Product {
   slug: string; accent: Accent; badge: string; kicker: string;
-  name: string; variety: string; process: "Natural" | "Honey" | "Lavado";
+  name: string; variety: string; process: "Natural" | "Natural" | "Lavado";
   origin: string; altitude: string; roast: string;
   intensity: "Suave — media" | "Media" | "Media — alta";
   sca: number; notes: string[]; variants: Variant[];
@@ -19,11 +19,11 @@ export const ACCENT_COLORS: Record<Accent, { base: string; dark: string; pale: s
 export const PRODUCTS: Product[] = [
   {
     slug: "bourbon-rosado", accent: "bourbon",
-    badge: "La joya", kicker: "Bolsa dorada",
+    badge: "Herencia Opita", kicker: "Bolsa dorada",
     name: "Bourbon Rosado", variety: "Bourbon Rosado", process: "Natural",
     origin: "Santa María, Huila", altitude: "2.000 m.s.n.m.",
     roast: "Media", intensity: "Suave — media", sca: 92,
-    notes: ["Frutos amarillos", "Panela", "Jazmín", "Bergamota", "Cacao fino"],
+    notes: ["Frutos amarillos", "Panela", "Jazmín", "Cacao fino"],
     variants: [{ weight: "250g", price: 31900 }, { weight: "454g", price: 54900 }],
     reviewCount: 48, rating: 5,
     image: "/images/bourbon-main.jpg",
@@ -36,10 +36,10 @@ export const PRODUCTS: Product[] = [
   {
     slug: "variedad-colombia", accent: "colombia",
     badge: "Sofisticado", kicker: "Bolsa negra",
-    name: "Variedad Colombia", variety: "Colombia", process: "Honey",
+    name: "Variedad Colombia", variety: "Colombia", process: "Natural",
     origin: "Santa María, Huila", altitude: "1.900 m.s.n.m.",
     roast: "Media", intensity: "Media", sca: 87,
-    notes: ["Cítrico", "Durazno", "Chocolate blanco", "Naranja", "Miel"],
+    notes: ["Cítrico", "Durazno", "Naranja", "Miel"],
     variants: [{ weight: "250g", price: 29900 }, { weight: "454g", price: 49900 }],
     reviewCount: 32, rating: 5,
     image: "/images/colombia-main.jpg",
@@ -55,7 +55,7 @@ export const PRODUCTS: Product[] = [
     name: "Blend", variety: "Castillo · Caturra · Papayo", process: "Lavado",
     origin: "Santa María, Huila", altitude: "1.800 m.s.n.m.",
     roast: "Media oscura", intensity: "Media — alta", sca: 82,
-    notes: ["Caramelo", "Avellana", "Chocolate", "Nuez", "Dulce equilibrado"],
+    notes: ["Caramelo", "Avellana", "Chocolate", "Nuez"],
     variants: [{ weight: "250g", price: 26900 }, { weight: "454g", price: 44900 }],
     reviewCount: 61, rating: 5,
     image: "/images/blend-main.jpg",
