@@ -37,7 +37,7 @@ const SLIDES = [
   },
   {
     image: "/images/bourbon-2.jpg",
-    eyebrow: "Tostado esta semana",
+    eyebrow: "Tostado fresco",
     title: "Fresco del",
     titleEm: "origen",
     subtitle: "Santa María · 2.000 m.s.n.m.",

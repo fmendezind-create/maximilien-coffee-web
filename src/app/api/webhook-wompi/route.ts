@@ -169,7 +169,7 @@ async function sendConfirmationEmail({
 
             <!-- CTA -->
             <div style="text-align:center;margin-bottom:32px;">
-              <a href="https://maximilien-coffee-web.vercel.app/cafes"
+              <a href="https://maximiliencoffee.com/cafes"
                 style="display:inline-block;background:#C8A84A;color:#0A0704;padding:14px 36px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;">
                 Ver más cafés
               </a>
@@ -211,7 +211,7 @@ async function sendConfirmationEmail({
       Authorization: `Bearer ${resendKey}`,
     },
     body: JSON.stringify({
-      from: "Maximilien Coffee <onboarding@resend.dev>",
+      from: "Maximilien Coffee <noreply@maximiliencoffee.com>",
       to: [email],
       subject: `✓ Pedido confirmado #${reference} — Maximilien Coffee`,
       html,

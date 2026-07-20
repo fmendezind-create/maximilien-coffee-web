@@ -5,15 +5,14 @@ import { Product, ACCENT_COLORS, formatCOP } from "@/lib/products";
 import { useCart } from "@/lib/cart-context";
 import { Gallery } from "@/components/product/gallery";
 
-const GRIND_OPTS = ["Filtro", "Espresso", "Prensa francesa", "Moka"];
+
 
 export function ProductDetail({ product }: { product: Product }) {
   const colors = ACCENT_COLORS[product.accent];
   const { addItem, openCart } = useCart();
 
   const [variantIdx, setVariantIdx] = useState(0);
-  const [form, setForm] = useState<"grano" | "molido">("molido");
-  const [grind, setGrind] = useState("Filtro");
+
   const [qty, setQty] = useState(1);
   const [heart, setHeart] = useState(false);
   const [openAcc, setOpenAcc] = useState<number | null>(null);
@@ -27,10 +26,11 @@ export function ProductDetail({ product }: { product: Product }) {
 
   function handleAdd() {
     addItem({
-      id: `${product.slug}-${variant.weight}-${form === "molido" ? grind : "grano"}`,
+      id: `${product.slug}-${variant.weight}`,
+      grind: "Estándar",
       slug: product.slug, name: product.name, accent: product.accent,
       image: product.image, weight: variant.weight,
-      grind: form === "molido" ? grind : "En grano",
+
       unitPrice: variant.price,
     }, qty);
     setAdded(true);
@@ -111,20 +111,7 @@ export function ProductDetail({ product }: { product: Product }) {
           ))}
         </div>
 
-        <div className="flex gap-2 mb-4" role="group" aria-label="Forma">
-          <SelBtn active={form === "grano"}  onClick={() => setForm("grano")}>En grano</SelBtn>
-          <SelBtn active={form === "molido"} onClick={() => setForm("molido")}>Molido</SelBtn>
-        </div>
 
-        <div className="overflow-hidden transition-all duration-300 mb-1"
-          style={{ maxHeight: form === "molido" ? "90px" : "0", opacity: form === "molido" ? 1 : 0 }}>
-          <p className="text-[11px] text-brown-light mb-2 mt-0.5">¿Para qué cafetera?</p>
-          <div className="flex flex-wrap gap-2">
-            {GRIND_OPTS.map(g => (
-              <SelBtnSm key={g} active={grind === g} onClick={() => setGrind(g)}>{g}</SelBtnSm>
-            ))}
-          </div>
-        </div>
 
         <Hr />
 

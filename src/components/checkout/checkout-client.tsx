@@ -59,7 +59,8 @@ export function CheckoutClient() {
   const cities = form.dept ? (COLOMBIA[form.dept] || []) : [];
 
   const discount = Math.round(subtotal * discountPct / 100);
-  const total = subtotal - discount;
+  const shipping = (subtotal - discount) >= 80000 ? 0 : 5000;
+  const total = subtotal - discount + shipping;
 
   function applyCoupon() {
     const code = coupon.trim().toUpperCase();
