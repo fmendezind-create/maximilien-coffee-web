@@ -135,7 +135,7 @@ export function CheckoutClient() {
     }
 
     const params = new URLSearchParams({
-      "public-key": "pub_test_un2Yf64uawKbkcxNjTtB4jPIVPIlpCyk",
+      "public-key": "pub_prod_pGqqwnsWc5oM91bTuy1DtIajO4BxT4pU",
       currency,
       "amount-in-cents": String(amountInCents),
       reference: orderRef,
