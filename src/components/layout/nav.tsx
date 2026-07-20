@@ -30,7 +30,7 @@ export function Nav({ breadcrumb }: NavProps) {
         <div className="flex items-center justify-between px-5 md:px-12 h-16 max-w-[1360px] mx-auto">
 
           <Link href="/" className="flex items-center gap-2.5 no-underline shrink-0" aria-label="Maximilien Coffee">
-            <Image src="/images/logo.jpg" alt="" width={40} height={40} className="w-9 h-9 rounded-full object-cover border border-gold/30" />
+            <Image src="/images/logo.jpg" alt="" width={50} height={50} className="w-12 h-12 rounded-full object-cover border border-gold/30" />
             <div>
               <div className="font-display text-[13px] font-semibold tracking-[0.2em] text-ink">Maximilien Coffee</div>
               <div className="font-display text-[9px] italic tracking-[0.18em] text-gold">Alma de Café</div>
