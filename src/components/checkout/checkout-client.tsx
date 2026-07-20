@@ -303,7 +303,7 @@ export function CheckoutClient() {
             <div className="flex justify-between text-[13px] text-brown-light">
               <span>Envío</span>
               <span className={subtotal >= 80000 ? "text-green-700 font-medium" : ""}>
-                {subtotal >= 80000 ? "Gratis" : "Calculado al pagar"}
+                {shipping === 0 ? "Gratis" : "$5.000"}
               </span>
             </div>
             {discount > 0 && (

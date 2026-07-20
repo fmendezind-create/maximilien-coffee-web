@@ -12,6 +12,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const { addItem, openCart } = useCart();
 
   const [variantIdx, setVariantIdx] = useState(0);
+  const [form, setForm] = useState<"grano" | "molido">("molido");
 
   const [qty, setQty] = useState(1);
   const [heart, setHeart] = useState(false);
@@ -26,8 +27,8 @@ export function ProductDetail({ product }: { product: Product }) {
 
   function handleAdd() {
     addItem({
-      id: `${product.slug}-${variant.weight}`,
-      grind: "Estándar",
+      id: `${product.slug}-${variant.weight}-${form}`,
+      grind: form === "molido" ? "Molido estándar" : "En grano",
       slug: product.slug, name: product.name, accent: product.accent,
       image: product.image, weight: variant.weight,
 
@@ -109,6 +110,13 @@ export function ProductDetail({ product }: { product: Product }) {
           {product.variants.map((v, i) => (
             <SelBtn key={v.weight} active={variantIdx === i} onClick={() => setVariantIdx(i)}>{v.weight}</SelBtn>
           ))}
+        </div>
+
+        {/* Grano o Molido */}
+        <p className="text-[10px] font-medium tracking-[0.24em] uppercase mb-2.5 mt-4" style={{ color: colors.base }}>Presentación</p>
+        <div className="flex gap-2 mb-4" role="group" aria-label="Forma de entrega">
+          <SelBtn active={form === "molido"} onClick={() => setForm("molido")}>Molido</SelBtn>
+          <SelBtn active={form === "grano"}  onClick={() => setForm("grano")}>En grano</SelBtn>
         </div>
 
 
