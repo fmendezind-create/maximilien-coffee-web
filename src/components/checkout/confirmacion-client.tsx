@@ -9,7 +9,7 @@ interface Props {
 }
 
 export function ConfirmacionClient({ params }: Props) {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal } = useCart();
   const emailSent = useRef(false);
 
   const orderNum = params.order ?? "MC-" + Date.now();
@@ -42,7 +42,6 @@ export function ConfirmacionClient({ params }: Props) {
     }).then(r => r.json())
       .then(() => {
         sessionStorage.removeItem("mc_customer");
-        clearCart();
       })
       .catch(console.error);
   }, [isApproved, orderNum, clearCart]);
