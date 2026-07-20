@@ -13,8 +13,8 @@ export function TrustBar() {
               <rect x="1" y="8" width="6" height="8" rx="1"/>
             </svg>
           }
-          text="Envío gratis +$80.000"
-          sub="$5.000 en pedidos menores"
+          text="Envío gratis +$60.000"
+          sub="$5.900 en pedidos menores"
         />
 
         <Divider />

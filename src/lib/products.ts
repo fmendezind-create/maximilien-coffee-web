@@ -45,7 +45,7 @@ export const PRODUCTS: Product[] = [
     image: "/images/colombia-main.jpg",
     gallery: ["/images/colombia-1.jpg", "/images/colombia-2.jpg"],
     storyTitle: "Por qué es especial",
-    storyBody: "La Variedad Colombia fue desarrollada por Cenicafé como una alternativa resistente a la roya que mantiene la calidad del Caturra. Bien cultivada a gran altitud y procesada en honey, produce tazas extraordinarias — ácidas, jugosas y complejas. Este lote a 1.900 m.s.n.m. en el Huila lo demuestra con 89 puntos SCA.",
+    storyBody: "La Variedad Colombia fue desarrollada por Cenicafé como una alternativa resistente a la roya que mantiene la calidad del Caturra. Bien cultivada a gran altitud y procesada de forma natural, produce tazas extraordinarias — ácidas, jugosas y complejas. Este lote a 1.900 m.s.n.m. en el Huila lo demuestra con 87 puntos SCA.",
     processTitle: "Proceso natural",
     processBody: "Las cerezas se secan enteras al sol durante 25–30 días sin remover la pulpa. El azúcar de la fruta fermenta lentamente y penetra el grano — de ahí vienen las notas frutales y la dulzura característica.",
   },

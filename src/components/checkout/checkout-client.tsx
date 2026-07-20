@@ -146,6 +146,20 @@ export function CheckoutClient() {
       "customer-data:phone-number-prefix": "+57",
       "redirect-url": redirectUrl,
     });
+    // Guardar datos del cliente para el email de confirmación
+    sessionStorage.setItem("mc_customer", JSON.stringify({
+      email: form.email,
+      name: `${form.firstName} ${form.lastName}`,
+      total,
+      items: items.map(i => ({
+        name: i.name,
+        weight: i.weight,
+        grind: i.grind,
+        quantity: i.quantity,
+        unit_price: i.unitPrice,
+      })),
+    }));
+
     window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
   }
 
