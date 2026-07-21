@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   creator: "Maximilien Coffee",
   publisher: "Maximilien Coffee",
   verification: {
-    google: "5AptonEmQ6-JPb7scjvW2m0A0V4v-H-zCxG9l_OkH44",
+    google: ["5AptonEmQ6-JPb7scjvW2m0A0V4v-H-zCxG9l_OkH44", "2KE53nMQ30hn6kJN_kXQjg_56vBhKdoqjCGapT7ghdc"],
   },
   robots: {
     index: true,
