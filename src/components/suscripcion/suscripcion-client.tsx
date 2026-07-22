@@ -77,6 +77,9 @@ export function SuscripcionClient() {
       return { slug: p.slug, name: p.name, weight: selectedPlan.weight };
     });
 
+    const orderRef = "SUB-" + Date.now();
+
+    // 1. Registrar suscripción en el backend
     try {
       await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/subscriptions`, {
         method: "POST",
@@ -93,12 +96,56 @@ export function SuscripcionClient() {
           price_original: selectedPlan.originalPrice,
           price_discounted: selectedPlan.price,
           notes: form.notes,
+          reference: orderRef,
         }),
       });
     } catch { /* continúa aunque falle el backend */ }
 
-    setSubmitted(true);
-    setLoading(false);
+    // 2. Guardar datos en sessionStorage para el email de confirmación
+    sessionStorage.setItem("mc_customer", JSON.stringify({
+      email: form.email,
+      name: form.name,
+      total: selectedPlan.price,
+      items: selectedProducts.map(p => ({
+        name: p.name,
+        weight: selectedPlan.weight,
+        grind: "Estándar",
+        quantity: 1,
+        unit_price: selectedPlan.price / selections.length,
+      })),
+    }));
+
+    // 3. Generar firma de integridad
+    let signature = "";
+    try {
+      const res = await fetch("/api/wompi-signature", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reference: orderRef,
+          amountInCents: selectedPlan.price * 100,
+          currency: "COP",
+        }),
+      });
+      const data = await res.json();
+      signature = data.signature ?? "";
+    } catch { /* continúa sin firma */ }
+
+    // 4. Redirigir a Wompi con tokenización habilitada
+    const params = new URLSearchParams({
+      "public-key": "pub_prod_pGqqwnsWc5oM91bTuy1DtIajO4BxT4pU",
+      currency: "COP",
+      "amount-in-cents": String(selectedPlan.price * 100),
+      reference: orderRef,
+      "signature:integrity": signature,
+      "customer-data:email": form.email,
+      "customer-data:full-name": form.name,
+      "customer-data:phone-number": form.phone.replace(/[^0-9]/g, ""),
+      "customer-data:phone-number-prefix": "+57",
+      "redirect-url": `${window.location.origin}/checkout/confirmacion?order=${orderRef}&type=subscription`,
+    });
+
+    window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
   }
 
   if (submitted) {
@@ -301,10 +348,10 @@ export function SuscripcionClient() {
                     disabled={loading || !form.name || !form.email || !form.phone}
                     className="w-full py-4 bg-gold text-ink text-[11px] font-semibold tracking-[0.18em] uppercase hover:bg-gold-light transition-colors disabled:opacity-50 mb-3"
                   >
-                    {loading ? "Enviando..." : `Suscribirme — ${formatCOP(selectedPlan.price)}/mes`}
+                    {loading ? "Procesando..." : `Pagar primer mes — ${formatCOP(selectedPlan.price)}`}
                   </button>
                   <p className="text-[10px] text-brown-light text-center leading-[1.6]">
-                    Te contactamos en 24h para configurar el cobro automático mensual con tu tarjeta.
+                    Pago seguro vía Wompi. Tu tarjeta queda registrada para el cobro automático de los meses siguientes.
                   </p>
                 </div>
               </div>
@@ -332,7 +379,7 @@ export function SuscripcionClient() {
           <h2 className="font-display text-2xl font-normal text-ink mb-8 text-center">Preguntas frecuentes</h2>
           <div>
             {[
-              { q: "¿Cómo funciona el cobro automático?", a: "Cuando te suscribes, te contactamos por WhatsApp para vincular tu tarjeta de crédito o débito. A partir del segundo mes el cobro es automático el mismo día de cada mes. Siempre recibes una notificación antes." },
+              { q: "¿Cómo funciona el cobro automático?", a: "Pagas el primer mes inmediatamente con tu tarjeta vía Wompi. Tu tarjeta queda registrada de forma segura y a partir del segundo mes el cobro es automático el mismo día de cada mes. Siempre recibes una notificación por WhatsApp antes del cobro." },
               { q: "¿Puedo cambiar los cafés cada mes?", a: "Sí. Escríbenos por WhatsApp antes del día 20 de cada mes y cambiamos tu combinación para el siguiente despacho sin costo adicional." },
               { q: "¿Cuándo llega mi primer pedido?", a: "Te contactamos en menos de 24 horas para confirmar los datos y coordinar tu primer despacho. Generalmente sale en 48 horas hábiles." },
               { q: "¿Cómo cancelo la suscripción?", a: "Escríbenos por WhatsApp antes del día 20 del mes y cancelamos sin penalizaciones. El último cobro ya realizado no se reembolsa pero sí recibes ese último pedido." },
