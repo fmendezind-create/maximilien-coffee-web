@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/cafes`,   lastModified: now, changeFrequency: "weekly",  priority: 0.9 },
     { url: `${base}/origen`,  lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/barista`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/suscripcion`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/blog`,    lastModified: now, changeFrequency: "weekly",  priority: 0.8 },
   ];
 
