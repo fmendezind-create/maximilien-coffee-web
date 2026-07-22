@@ -102,7 +102,7 @@ export function CartDrawer() {
               {items.map((item) => (
                 <div
                   key={item.id}
-                  className="grid grid-cols-[80px_1fr] gap-4 px-6 py-5 border-b border-cream-3 hover:bg-cream transition-colors relative"
+                  className="flex items-start gap-3 px-5 py-4 border-b border-cream-3 hover:bg-cream transition-colors relative"
                 >
                   <span
                     className="absolute left-0 top-0 bottom-0 w-[3px]"
@@ -116,10 +116,10 @@ export function CartDrawer() {
                     }}
                     aria-hidden="true"
                   />
-                  <div className="w-20 h-[100px] rounded-sm overflow-hidden bg-cream-2 shrink-0">
-                    <Image src={item.image} alt={item.name} width={80} height={100} className="w-full h-full object-cover" />
+                  <div className="w-20 h-20 rounded-sm overflow-hidden bg-cream-2 shrink-0">
+                    <Image src={item.image} alt={item.name} width={80} height={80} className="w-full h-full object-contain p-1" />
                   </div>
-                  <div className="flex flex-col justify-between py-0.5">
+                  <div className="flex flex-col justify-between flex-1 min-w-0 py-0.5">
                     <div>
                       <div className="font-display text-[17px] font-medium text-ink leading-tight mb-1">
                         {item.name}
