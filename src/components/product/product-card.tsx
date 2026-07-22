@@ -27,7 +27,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       {/* Image */}
       <div
-        className="relative h-[260px] sm:h-[300px] md:h-[340px] overflow-hidden"
+        className="relative h-[320px] sm:h-[340px] md:h-[380px] overflow-hidden"
         style={{ background: product.accent === "bourbon" ? "#E8D4A8" : product.accent === "colombia" ? "#0E0E0E" : "#1A0808" }}
       >
         <Image
@@ -61,11 +61,11 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
 
       {/* Info */}
-      <div className="p-4 md:p-6 pb-5 md:pb-7">
+      <div className="p-5 md:p-6 pb-6 md:pb-8">
         <p className="text-[9.5px] font-semibold tracking-[0.18em] uppercase mb-1.5" style={{ color: colors.base }}>
           {product.kicker}
         </p>
-        <h3 className="font-display text-xl md:text-2xl font-medium text-ink leading-tight mb-1">
+        <h3 className="font-display text-xl md:text-2xl font-medium text-ink leading-tight mb-2">
           {product.name}
         </h3>
         <p className="font-display text-[12px] italic font-light text-brown-light mb-3 md:mb-4">
@@ -77,7 +77,7 @@ export function ProductCard({ product }: { product: Product }) {
           ))}
         </div>
         <div className="flex items-center justify-between">
-          <div className="font-display text-xl md:text-[22px] text-ink">
+          <div className="font-display text-2xl md:text-[24px] text-ink">
             {formatCOP(cheapest.price)}{" "}
             <span className="text-[10px] text-brown-light font-body">/ {cheapest.weight}</span>
           </div>

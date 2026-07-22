@@ -26,7 +26,7 @@ export function Collection() {
 
       <div
         ref={gridRef}
-        className="reveal grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-cream-3 border border-cream-3 mx-4 md:mx-12"
+        className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-cream-3 border border-cream-3 mx-0 md:mx-8"
       >
         {PRODUCTS.map(p => <ProductCard key={p.slug} product={p} />)}
       </div>
