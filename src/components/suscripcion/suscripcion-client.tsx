@@ -81,7 +81,7 @@ export function SuscripcionClient() {
 
     // 1. Registrar suscripción en el backend
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/subscriptions`, {
+      await fetch(`https://web-production-aa93f.up.railway.app/subscriptions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

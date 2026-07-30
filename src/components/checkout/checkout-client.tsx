@@ -91,7 +91,7 @@ export function CheckoutClient() {
 
     // 1. Registrar pedido en el backend
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/orders`, {
+      await fetch(`https://web-production-aa93f.up.railway.app/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
