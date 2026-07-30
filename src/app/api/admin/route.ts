@@ -24,6 +24,12 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   const path = req.nextUrl.searchParams.get("path") || "";
+  const key = req.nextUrl.searchParams.get("key") || "";
+
+  if (key !== ADMIN_KEY) {
+    return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  }
+
   const body = await req.json();
 
   try {
@@ -33,6 +39,27 @@ export async function PATCH(req: NextRequest) {
       body: JSON.stringify(body),
     });
     const data = await res.json();
+
+    // Si el estado cambió a "shipped", enviar email de despacho
+    if (body.status === "shipped" && data.customer_email) {
+      const items = typeof data.items === "string" ? JSON.parse(data.items) : data.items;
+      
+      // Llamar al endpoint de email de despacho
+      await fetch(`${req.nextUrl.origin}/api/send-shipped`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: data.customer_email,
+          name: data.customer_name,
+          reference: data.reference,
+          items: items,
+          total: data.total,
+          trackingNumber: body.tracking_number || null,
+          city: data.customer_city,
+        }),
+      }).catch(console.error);
+    }
+
     return NextResponse.json(data);
   } catch (err) {
     return NextResponse.json({ error: "Error conectando al backend" }, { status: 502 });

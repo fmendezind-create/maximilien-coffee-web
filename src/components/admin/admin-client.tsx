@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const BACKEND = "https://web-production-aa93f.up.railway.app";
+const BACKEND = "https://web-production-aa93f.up.railway.app" || "https://web-production-aa93f.up.railway.app";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   pending:    { label: "Pendiente",   color: "#f59e0b" },
@@ -29,6 +29,7 @@ export function AdminClient() {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<any>(null);
   const [filterStatus, setFilterStatus] = useState("");
+  const [trackingNumber, setTrackingNumber] = useState("");
   const [error, setError]     = useState("");
 
   const api = useCallback(async (path: string, opts?: RequestInit) => {
@@ -85,11 +86,16 @@ export function AdminClient() {
   useEffect(() => { loadData(); }, [loadData]);
 
   async function updateStatus(reference: string, status: string) {
+    const body: Record<string, string> = { status };
+    if (status === "shipped" && trackingNumber) {
+      body.tracking_number = trackingNumber;
+    }
     await api(`/admin/orders/${reference}/status`, {
       method: "PATCH",
-      body: JSON.stringify({ status }),
+      body: JSON.stringify(body),
     });
     loadData();
+    setTrackingNumber("");
     if (selected?.reference === reference) setSelected({ ...selected, status });
   }
 
@@ -289,7 +295,21 @@ export function AdminClient() {
                       </div>
                       <div>
                         <p className="text-[10px] uppercase tracking-[0.16em] text-brown-light mb-2">Cambiar estado</p>
-                        <div className="grid grid-cols-2 gap-1.5">
+                        {/* Campo número de guía cuando se va a despachar */}
+              <div className="mb-3">
+                <label className="block text-[10px] uppercase tracking-[0.14em] text-brown-light mb-1.5">
+                  Número de guía (opcional)
+                </label>
+                <input
+                  type="text"
+                  value={trackingNumber}
+                  onChange={e => setTrackingNumber(e.target.value)}
+                  placeholder="Ej: 1234567890"
+                  className="w-full px-3 py-2 border border-cream-3 text-xs outline-none focus:border-gold"
+                />
+                <p className="text-[10px] text-brown-light mt-1">Se incluirá en el email de despacho</p>
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
                           {Object.entries(STATUS_LABELS).map(([s, info]) => (
                             <button key={s} onClick={() => updateStatus(selected.reference, s)}
                               className={`py-2 px-3 text-[10px] font-semibold border transition-colors ${
