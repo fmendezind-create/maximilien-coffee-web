@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const BACKEND = "https://web-production-aa93f.up.railway.app";
+const BACKEND = "https://web-production-aa93f.up.railway.app" || "https://web-production-aa93f.up.railway.app";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   pending:    { label: "Pendiente",   color: "#f59e0b" },
@@ -32,10 +32,23 @@ export function AdminClient() {
   const [error, setError]     = useState("");
 
   const api = useCallback(async (path: string, opts?: RequestInit) => {
-    const res = await fetch(`${BACKEND}${path}`, {
-      ...opts,
-      headers: { "X-Admin-Key": key, "Content-Type": "application/json", ...opts?.headers },
-    });
+    // Usar proxy de Vercel para evitar CORS
+    const proxyPath = path.replace("/admin/", "");
+    const method = opts?.method || "GET";
+    
+    let url = `/api/admin?path=${proxyPath}&key=${key}`;
+    
+    const fetchOpts: RequestInit = {
+      method,
+      headers: { "Content-Type": "application/json" },
+    };
+    
+    if (opts?.body) {
+      fetchOpts.body = opts.body;
+      url = `/api/admin?path=${proxyPath}&key=${key}`;
+    }
+    
+    const res = await fetch(url, fetchOpts);
     if (!res.ok) throw new Error(await res.text());
     return res.json();
   }, [key]);
@@ -43,6 +56,9 @@ export function AdminClient() {
   async function login() {
     setLoading(true); setError("");
     try {
+      if (key !== "mc-admin-2025") {
+        throw new Error("Llave incorrecta");
+      }
       await api("/admin/stats");
       setAuthed(true);
     } catch {
