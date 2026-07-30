@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const BACKEND = "https://web-production-aa93f.up.railway.app" || "https://web-production-aa93f.up.railway.app";
+const BACKEND = "https://web-production-aa93f.up.railway.app";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
   pending:    { label: "Pendiente",   color: "#f59e0b" },
