@@ -53,7 +53,11 @@ export function Nav({ breadcrumb }: NavProps) {
           <div className="flex items-center gap-1">
             <div className="hidden md:flex items-center gap-6 mr-4">
               <Link href="/" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-brown hover:text-gold transition-colors no-underline">Inicio</Link>
-              <Link href="/cafes" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-brown hover:text-gold transition-colors no-underline">Cafés</Link>
+              <Link href="/cafes" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-brown hover:text-gold transition-colors no-underline">Catálogo</Link>
+              <Link href="/origen" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-brown hover:text-gold transition-colors no-underline">Origen</Link>
+              <Link href="/barista" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-brown hover:text-gold transition-colors no-underline">Barista IA</Link>
+              <Link href="/blog" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-brown hover:text-gold transition-colors no-underline">Blog</Link>
+              <Link href="/suscripcion" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-gold hover:text-gold-light transition-colors no-underline border border-gold/40 px-3 py-1">Suscripción</Link>
             </div>
 
             <button onClick={openCart} aria-label="Abrir carrito" className="w-10 h-10 flex items-center justify-center text-brown hover:text-gold transition-colors relative">
@@ -103,6 +107,7 @@ export function Nav({ breadcrumb }: NavProps) {
             { href: "/origen", label: "Origen", sub: false },
             { href: "/barista", label: "Barista IA ✦", sub: false },
             { href: "/blog", label: "Blog", sub: false },
+            { href: "/suscripcion", label: "Suscripción", sub: false },
             { href: "/suscripcion", label: "Suscripción", sub: false },
           ].map(link => (
             <Link
