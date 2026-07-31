@@ -59,7 +59,11 @@ export function ConfirmacionClient({ params }: Props) {
         </>
       ) : isPending ? (
         <>
-          <div className="w-[68px] h-[68px] rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-[26px] mx-auto mb-6">⏳</div>
+          <div className="w-[68px] h-[68px] rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center text-[26px] mx-auto mb-6">
+          <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 text-amber-500" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
           <h1 className="font-display text-4xl font-light text-ink mb-3">Pago <em className="italic text-gold">en proceso</em></h1>
           <p className="text-sm font-light text-brown-light mb-6">Tu pago está siendo procesado. Te notificaremos por WhatsApp cuando sea confirmado.</p>
           <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-cream border border-cream-3 text-xs text-brown mb-8">
@@ -68,7 +72,11 @@ export function ConfirmacionClient({ params }: Props) {
         </>
       ) : (
         <>
-          <div className="w-[68px] h-[68px] rounded-full bg-cream border border-gold flex items-center justify-center text-[26px] mx-auto mb-6" aria-hidden="true">☕</div>
+          <div className="w-[68px] h-[68px] rounded-full bg-cream border border-gold flex items-center justify-center text-[26px] mx-auto mb-6" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" className="w-7 h-7 text-gold" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/>
+          </svg>
+        </div>
           <h1 className="font-display text-4xl font-light text-ink mb-3">
             ¡Pedido <em className="italic text-gold">confirmado</em>!
           </h1>

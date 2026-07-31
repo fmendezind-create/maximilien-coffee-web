@@ -9,7 +9,7 @@ export function BaristaCTA() {
     >
       <div className="flex flex-col md:flex-row items-center gap-5">
         <div className="w-14 h-14 rounded-full bg-ink flex items-center justify-center text-[26px] shrink-0 border border-gold/30" aria-hidden="true">
-          ☕
+          
         </div>
         <div>
           <h2 id="barista-title" className="font-display text-[22px] md:text-[26px] font-normal text-ink mb-1.5">

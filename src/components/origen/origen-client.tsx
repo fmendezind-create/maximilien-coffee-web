@@ -178,7 +178,7 @@ export function OrigenClient() {
               </div>
               {/* Info card sobre el mapa */}
               <div className="bg-ink-2 px-6 py-4 flex items-center gap-4">
-                <span className="text-2xl" aria-hidden="true">📍</span>
+                <span className="text-2xl" aria-hidden="true"></span>
                 <div>
                   <div className="text-sm font-medium text-cream">Santa María · Huila · Colombia</div>
                   <div className="text-[11px] text-cream/40 mt-0.5">A 4 horas de Bogotá · Macizo Colombiano</div>

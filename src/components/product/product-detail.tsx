@@ -169,9 +169,9 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
 
         <div className="flex flex-wrap gap-4 mb-6">
-          <TrustItem icon="🚚" text="Envío gratis" />
-          <TrustItem icon="↩️" text="Garantía" />
-          <TrustItem icon="🔒" text="Pago seguro" />
+          <TrustItem icon="" text="Envío gratis" />
+          <TrustItem icon="" text="Garantía" />
+          <TrustItem icon="" text="Pago seguro" />
         </div>
 
         <Hr />

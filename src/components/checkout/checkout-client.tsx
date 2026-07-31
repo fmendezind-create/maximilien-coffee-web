@@ -274,10 +274,25 @@ export function CheckoutClient() {
           </div>
 
           {/* Trust */}
-          <div className="flex flex-wrap gap-5 text-[11.5px] text-brown-light border-t border-cream-3 pt-5">
-            <span>🔒 Pago 100% seguro vía Wompi</span>
-            <span>🚚 Envío gratis +$80.000</span>
-            <span>↩️ Garantía de satisfacción</span>
+          <div className="flex flex-wrap gap-6 border-t border-cream-3 pt-5">
+            <div className="flex items-center gap-2">
+              <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5 text-ink/60 shrink-0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <rect x="4" y="10" width="24" height="16" rx="2"/><path d="M10 10V8a6 6 0 0112 0v2"/><path d="M6 18h20"/>
+              </svg>
+              <span className="text-[11px] text-brown font-medium">Pago seguro · SSL</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5 text-ink/60 shrink-0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12h18M4 12l3-6h14l3 6"/><path d="M4 12v10a2 2 0 002 2h20a2 2 0 002-2V12"/><circle cx="10" cy="26" r="2"/><circle cx="22" cy="26" r="2"/>
+              </svg>
+              <span className="text-[11px] text-brown font-medium">Envío gratis +$60.000</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5 text-ink/60 shrink-0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M16 4L4 9v8c0 6.627 5.373 10.627 12 12 6.627-1.373 12-5.373 12-12V9L16 4z"/><path d="M11 16l3 3 7-7"/>
+              </svg>
+              <span className="text-[11px] text-brown font-medium">Garantía total</span>
+            </div>
           </div>
         </div>
 

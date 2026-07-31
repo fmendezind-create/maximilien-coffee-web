@@ -115,7 +115,11 @@ export function AdminClient() {
       <div className="min-h-screen bg-ink flex items-center justify-center px-6">
         <div className="bg-white-warm w-full max-w-[380px] p-10">
           <div className="text-center mb-8">
-            <div className="text-3xl mb-3">☕</div>
+            <div className="mb-3 flex justify-center">
+          <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8 text-gold" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/>
+          </svg>
+        </div>
             <h1 className="font-display text-2xl font-normal text-ink">Panel Admin</h1>
             <p className="text-sm text-brown-light mt-1">Maximilien Coffee</p>
           </div>
@@ -151,7 +155,7 @@ export function AdminClient() {
       {/* Header */}
       <div className="bg-ink px-6 md:px-10 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-xl">☕</span>
+          <span className="text-xl"></span>
           <div>
             <div className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gold">Maximilien Coffee</div>
             <div className="text-[10px] text-cream/30">Panel de Administración</div>

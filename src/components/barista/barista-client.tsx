@@ -123,7 +123,7 @@ const QUIZ = [
   {
     key: "intensity" as const,
     question: "¿Cómo te gusta el café?",
-    emoji: "☕",
+    emoji: "",
     options: [
       { value: "suave",      label: "Suave y frutal",      desc: "Notas florales, acidez suave" },
       { value: "balanceado", label: "Balanceado",           desc: "Entre dulce y ácido, versátil" },
@@ -246,7 +246,7 @@ export function BaristaClient() {
 
       {/* ── HERO HEADER ── */}
       <div className="bg-ink-2 px-6 md:px-20 py-16 text-center">
-        <div className="text-4xl mb-4" aria-hidden="true">☕</div>
+        <div className="text-4xl mb-4" aria-hidden="true"></div>
         <h1 className="font-display font-normal text-cream mb-3" style={{ fontSize: "clamp(28px,4vw,48px)" }}>
           Barista <em className="italic text-gold-light">IA</em>
         </h1>
@@ -376,7 +376,7 @@ export function BaristaClient() {
             <div className="border border-cream-3">
               {/* Header chat */}
               <div className="flex items-center gap-3 px-5 py-4 border-b border-cream-3 bg-ink-2">
-                <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center text-base shrink-0" aria-hidden="true">☕</div>
+                <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center text-base shrink-0" aria-hidden="true"></div>
                 <div>
                   <div className="text-sm font-medium text-cream">Barista IA</div>
                   <div className="text-[11px] text-cream/40">Pregúntame lo que quieras</div>
@@ -391,7 +391,7 @@ export function BaristaClient() {
                 {messages.map((msg, i) => (
                   <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"} gap-3`}>
                     {msg.role === "assistant" && (
-                      <div className="w-7 h-7 rounded-full bg-gold flex items-center justify-center text-sm shrink-0 mt-0.5" aria-hidden="true">☕</div>
+                      <div className="w-7 h-7 rounded-full bg-gold flex items-center justify-center text-sm shrink-0 mt-0.5" aria-hidden="true"></div>
                     )}
                     <div
                       className={`max-w-[85%] px-4 py-3 text-[13.5px] font-light leading-[1.75] rounded-sm ${
@@ -407,7 +407,7 @@ export function BaristaClient() {
                 ))}
                 {loading && (
                   <div className="flex gap-3">
-                    <div className="w-7 h-7 rounded-full bg-gold flex items-center justify-center text-sm shrink-0" aria-hidden="true">☕</div>
+                    <div className="w-7 h-7 rounded-full bg-gold flex items-center justify-center text-sm shrink-0" aria-hidden="true"></div>
                     <div className="px-4 py-3 bg-cream border border-cream-3 text-brown-light text-[13px]">
                       <span className="animate-pulse">Escribiendo...</span>
                     </div>

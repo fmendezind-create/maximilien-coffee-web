@@ -70,7 +70,7 @@ export function CartDrawer() {
               <>🎉 <strong className="text-ink font-medium">¡Tienes envío gratis!</strong></>
             ) : (
               <>
-                Te faltan <strong className="text-ink font-medium">{formatCOP(shippingLeft)}</strong> para envío gratis 🚚
+                Te faltan <strong className="text-ink font-medium">{formatCOP(shippingLeft)}</strong> para envío gratis 
               </>
             )}
           </p>
@@ -86,7 +86,7 @@ export function CartDrawer() {
         <div className="flex-1 overflow-y-auto">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full px-8 py-12 text-center gap-4">
-              <div className="text-4xl opacity-30" aria-hidden="true">☕</div>
+              <div className="text-4xl opacity-30" aria-hidden="true"></div>
               <p className="font-display text-[22px] font-light text-ink">Tu carrito está vacío</p>
               <p className="text-sm text-brown-light font-light">Descubre nuestros cafés de especialidad</p>
               <Link
