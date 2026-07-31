@@ -26,7 +26,7 @@ export function Nav({ breadcrumb }: NavProps) {
 
   return (
     <>
-      <nav className="sticky top-0 z-[200] bg-white-warm/95 backdrop-blur-md border-b border-cream-3">
+      <nav className="sticky top-0 z-50 backdrop-blur-md bg-white-warm/95 border-b border-cream-3 sticky top-0 z-[200] bg-white-warm/95 backdrop-blur-md border-b border-cream-3">
         <div className="flex items-center justify-between px-5 md:px-12 h-16 max-w-[1360px] mx-auto">
 
           <Link href="/" className="flex items-center gap-2.5 no-underline shrink-0" aria-label="Maximilien Coffee">

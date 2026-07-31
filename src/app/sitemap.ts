@@ -35,5 +35,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.75,
   }));
 
-  return [...staticRoutes, ...productRoutes, ...blogRoutes];
+  const legalRoutes: MetadataRoute.Sitemap = [
+    { url: \`\${base}/legal/privacidad\`, lastModified: now, changeFrequency: "yearly" as const, priority: 0.3 },
+    { url: \`\${base}/legal/terminos\`, lastModified: now, changeFrequency: "yearly" as const, priority: 0.3 },
+    { url: \`\${base}/legal/aviso-legal\`, lastModified: now, changeFrequency: "yearly" as const, priority: 0.3 },
+    { url: \`\${base}/suscripcion\`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.8 },
+  ];
+
+  return [...staticRoutes, ...productRoutes, ...blogRoutes, ...legalRoutes];
 }

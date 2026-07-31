@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CookieBanner } from "@/components/layout/cookie-banner";
 import { CartProvider } from "@/lib/cart-context";
 import { CartDrawer } from "@/components/layout/cart-drawer";
 
@@ -73,11 +74,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap"
           rel="stylesheet"
         />
+        {/* Google Analytics GA4 con Consent Mode */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('consent', 'default', {
+            analytics_storage: 'denied',
+            ad_storage: 'denied'
+          });
+          gtag('js', new Date());
+        `}} />
+  {/* Google reCAPTCHA v3 — reemplazar con tu site key real */}
+        <script async src="https://www.google.com/recaptcha/api.js?render=6LcXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+        <script dangerouslySetInnerHTML={{ __html: `gtag('config', 'G-XXXXXXXXXX');` }} />
       </head>
       <body className="antialiased">
         <CartProvider>
           {children}
           <CartDrawer />
+          <CookieBanner />
         </CartProvider>
       </body>
     </html>

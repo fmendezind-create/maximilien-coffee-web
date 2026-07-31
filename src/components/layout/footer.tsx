@@ -19,12 +19,28 @@ export function Footer() {
         { href: "/barista", label: "Barista IA" },
         { href: "/blog", label: "Blog" },
         { href: "/suscripcion", label: "Suscripción" },
+        { href: "/suscripcion", label: "Suscripción" },
         ].map(l => (
           <Link key={l.href} href={l.href} className="text-[11px] text-cream/30 hover:text-cream/65 transition-colors no-underline">{l.label}</Link>
         ))}
         <a href="https://wa.me/573001234567" target="_blank" rel="noopener noreferrer" className="text-[11px] text-cream/30 hover:text-cream/65 transition-colors no-underline">WhatsApp</a>
       </nav>
       <p className="text-[10px] text-cream/20">© 2025 Maximilien Coffee</p>
-    </footer>
+      <div className="border-t border-white-warm/10 py-4 px-6 md:px-20">
+    <div className="max-w-[1100px] mx-auto flex flex-wrap justify-center gap-x-6 gap-y-1">
+      {[
+        { href: "/legal/privacidad", label: "Política de Privacidad" },
+        { href: "/legal/terminos", label: "Términos y Condiciones" },
+        { href: "/legal/aviso-legal", label: "Aviso Legal" },
+        { href: "/legal/cookies", label: "Política de Cookies" },
+      ].map(link => (
+        <a key={link.href} href={link.href}
+          className="text-[10px] text-cream/30 hover:text-gold transition-colors no-underline">
+          {link.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</footer>
   );
 }

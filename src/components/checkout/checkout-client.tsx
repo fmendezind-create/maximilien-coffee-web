@@ -72,6 +72,21 @@ export function CheckoutClient() {
     }
   }
 
+  async function getRecaptchaToken(): Promise<string> {
+    try {
+      return await new Promise((resolve) => {
+        (window as any).grecaptcha?.ready(() => {
+          (window as any).grecaptcha
+            .execute("6LcXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", { action: "checkout" })
+            .then(resolve)
+            .catch(() => resolve(""));
+        });
+      });
+    } catch {
+      return "";
+    }
+  }
+
   async function handlePay() {
     const required = ["firstName", "lastName", "email", "phone"];
     const newErrors: Record<string, boolean> = {};
