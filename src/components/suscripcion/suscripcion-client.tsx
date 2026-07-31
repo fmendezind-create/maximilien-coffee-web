@@ -39,10 +39,10 @@ const PLANS = [
 ];
 
 const BENEFITS = [
-  { icon: "fire", title: "Tostado fresco para ti", desc: "Tu lote se tuesta el día del despacho." },
+  { icon: <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2c0 6-6 8-6 14a6 6 0 0012 0c0-6-6-8-6-14z"/></svg>,, title: "Tostado fresco para ti", desc: "Tu lote se tuesta el día del despacho." },
   { icon: "", title: "Envío gratis siempre", desc: "Incluido en el precio, cada mes." },
-  { icon: "edit", title: "Cambia los cafés", desc: "Cada mes puedes elegir combinaciones diferentes." },
-  { icon: "gift", title: "Acceso prioritario", desc: "Los suscriptores prueban primero cada cosecha nueva." },
+  { icon: <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,, title: "Cambia los cafés", desc: "Cada mes puedes elegir combinaciones diferentes." },
+  { icon: <svg viewBox="0 0 24 24" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>,, title: "Acceso prioritario", desc: "Los suscriptores prueban primero cada cosecha nueva." },
 ];
 
 export function SuscripcionClient() {
@@ -365,7 +365,7 @@ export function SuscripcionClient() {
         <div className="max-w-[860px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-px bg-cream-3 border border-cream-3">
           {BENEFITS.map(b => (
             <div key={b.title} className="bg-white-warm p-6 text-center">
-              <div className="text-ink/70 mb-3">{BENEFIT_ICONS[b.icon]}</div>
+              <div className="text-ink/70 mb-3">{b.icon}</div>
               <h3 className="font-display text-[14px] font-medium text-ink mb-1">{b.title}</h3>
               <p className="text-[12px] text-brown-light leading-[1.7]">{b.desc}</p>
             </div>
