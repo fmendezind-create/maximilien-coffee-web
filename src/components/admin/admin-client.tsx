@@ -225,7 +225,7 @@ export function AdminClient() {
                       <div className="flex items-start justify-between gap-3 mb-2">
                         <div>
                           <div className="text-[12px] font-semibold text-ink">#{order.reference}</div>
-                          <div className="text-[12px] text-brown-light">{order.customer_name} · {order.customer_email}</div>
+                          <div className="text-[12px] text-brown">{order.customer_name} · {order.customer_email}</div>
                         </div>
                         <div className="flex flex-col items-end gap-1 shrink-0">
                           <span className="text-[10px] font-semibold px-2 py-1 rounded-full"

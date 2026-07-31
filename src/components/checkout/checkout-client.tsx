@@ -129,6 +129,8 @@ export function CheckoutClient() {
           discount,
           total,
           notes: form.notes,
+          accepted_policy: true,
+          policy_accepted_at: new Date().toISOString(),
         }),
       });
     } catch {

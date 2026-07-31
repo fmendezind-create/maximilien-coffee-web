@@ -52,8 +52,8 @@ export function Nav({ breadcrumb }: NavProps) {
 
           <div className="flex items-center gap-1">
             <div className="hidden md:flex items-center gap-6 mr-4">
-              <Link href="/" className="text-[11px] font-medium tracking-[0.12em] uppercase text-brown-light hover:text-gold transition-colors no-underline">Inicio</Link>
-              <Link href="/cafes" className="text-[11px] font-medium tracking-[0.12em] uppercase text-brown-light hover:text-gold transition-colors no-underline">Cafés</Link>
+              <Link href="/" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-brown hover:text-gold transition-colors no-underline">Inicio</Link>
+              <Link href="/cafes" className="text-[11px] font-semibold tracking-[0.14em] uppercase text-brown hover:text-gold transition-colors no-underline">Cafés</Link>
             </div>
 
             <button onClick={openCart} aria-label="Abrir carrito" className="w-10 h-10 flex items-center justify-center text-brown hover:text-gold transition-colors relative">
