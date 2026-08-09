@@ -2,40 +2,72 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const BACKEND = "https://web-production-aa93f.up.railway.app";
+const BACKEND_PROXY = "/api/admin";
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  pending:    { label: "Pendiente",   color: "#f59e0b" },
-  paid:       { label: "Pagado",      color: "#3b82f6" },
-  processing: { label: "En proceso",  color: "#8b5cf6" },
-  shipped:    { label: "Despachado",  color: "#06b6d4" },
-  delivered:  { label: "Entregado",   color: "#22c55e" },
-  cancelled:  { label: "Cancelado",   color: "#ef4444" },
-  declined:   { label: "Rechazado",   color: "#ef4444" },
+  pending:    { label: "Pendiente",    color: "#f59e0b" },
+  paid:       { label: "Pagado",       color: "#3b82f6" },
+  confirmed:  { label: "Confirmado",   color: "#6366f1" },
+  processing: { label: "En proceso",   color: "#8b5cf6" },
+  preparing:  { label: "Preparando",   color: "#f97316" },
+  packed:     { label: "Empacado",     color: "#14b8a6" },
+  shipped:    { label: "Despachado",   color: "#06b6d4" },
+  in_transit: { label: "En tránsito",  color: "#0ea5e9" },
+  delivered:  { label: "Entregado",    color: "#22c55e" },
+  cancelled:  { label: "Cancelado",    color: "#ef4444" },
+  returned:   { label: "Devuelto",     color: "#f43f5e" },
+  declined:   { label: "Rechazado",    color: "#ef4444" },
 };
 
-function formatCOP(n: number) { return "$" + n.toLocaleString("es-CO"); }
+const SUB_STATUS_LABELS: Record<string, { label: string; color: string }> = {
+  pending:       { label: "Pendiente",     color: "#f59e0b" },
+  active:        { label: "Activa",        color: "#22c55e" },
+  paused:        { label: "Pausada",       color: "#f97316" },
+  cancelled:     { label: "Cancelada",     color: "#ef4444" },
+  payment_failed:{ label: "Pago fallido",  color: "#dc2626" },
+  expired:       { label: "Vencida",       color: "#9ca3af" },
+  suspended:     { label: "Suspendida",    color: "#6b7280" },
+};
+
+function formatCOP(n: number) { return "$" + Math.round(n || 0).toLocaleString("es-CO"); }
 function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("es-CO", { day: "2-digit", month: "short", year: "numeric" });
 }
+function StatusBadge({ status, map }: { status: string; map: Record<string, { label: string; color: string }> }) {
+  const s = map[status] || { label: status, color: "#9ca3af" };
+  return (
+    <span style={{ background: s.color + "20", color: s.color, border: `1px solid ${s.color}40` }}
+      className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide">
+      {s.label}
+    </span>
+  );
+}
+
+type Tab = "dashboard" | "orders" | "subscriptions" | "customers" | "inventory";
 
 export function AdminClient() {
   const [key, setKey]         = useState("");
   const [authed, setAuthed]   = useState(false);
-  const [tab, setTab]         = useState<"orders" | "inventory" | "stats">("orders");
+  const [tab, setTab]         = useState<Tab>("dashboard");
   const [orders, setOrders]   = useState<any[]>([]);
   const [stats, setStats]     = useState<any>(null);
+  const [subStats, setSubStats] = useState<any>(null);
   const [inventory, setInv]   = useState<any[]>([]);
+  const [subscriptions, setSubs] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<any>(null);
+  const [selectedSub, setSelectedSub] = useState<any>(null);
   const [filterStatus, setFilterStatus] = useState("");
   const [trackingNumber, setTrackingNumber] = useState("");
   const [error, setError]     = useState("");
+  const [search, setSearch]   = useState("");
 
-  const api = useCallback(async (path: string, opts?: RequestInit) => {
-    const proxyPath = path.replace("/admin/", "");
+  const api = useCallback(async (path: string, opts?: RequestInit & { prefix?: string }) => {
+    const prefix = opts?.prefix || "admin";
+    const url = `${BACKEND_PROXY}?path=${path}&prefix=${prefix}`;
     const method = opts?.method || "GET";
-    const url = `/api/admin?path=${proxyPath}`;
 
     const fetchOpts: RequestInit = {
       method,
@@ -44,7 +76,6 @@ export function AdminClient() {
         "Authorization": `Bearer ${key}`,
       },
     };
-
     if (opts?.body) fetchOpts.body = opts.body;
 
     const res = await fetch(url, fetchOpts);
@@ -55,40 +86,47 @@ export function AdminClient() {
   async function login() {
     setLoading(true); setError("");
     try {
-      if (key !== "mc-admin-2025") {
-        throw new Error("Llave incorrecta");
-      }
-      await api("/admin/stats");
+      if (key !== "mc-admin-2025") throw new Error("Llave incorrecta");
+      await api("stats");
       setAuthed(true);
     } catch {
       setError("Llave incorrecta");
     } finally { setLoading(false); }
   }
 
-  const loadData = useCallback(async () => {
-    if (!authed) return;
+  async function loadData() {
     setLoading(true);
     try {
-      const [o, s, i] = await Promise.all([
-        api(`/admin/orders${filterStatus ? `?status=${filterStatus}` : ""}`),
-        api("/admin/stats"),
-        api("/admin/inventory"),
+      const [o, s, i, ss, su] = await Promise.all([
+        api("orders?limit=100"),
+        api("stats"),
+        api("inventory"),
+        api("subscriptions/stats"),
+        api("subscriptions"),
       ]);
       setOrders(o.orders || []);
       setStats(s);
       setInv(i);
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
-  }, [authed, api, filterStatus]);
+      setSubStats(ss);
+      setSubs(Array.isArray(su) ? su : []);
+    } catch {}
+    setLoading(false);
+  }
 
-  useEffect(() => { loadData(); }, [loadData]);
+  async function loadCustomers() {
+    try {
+      const data = await api(`customers?limit=100${search ? `&search=${search}` : ""}`);
+      setCustomers(data.customers || []);
+    } catch {}
+  }
+
+  useEffect(() => { if (authed) loadData(); }, [authed]);
+  useEffect(() => { if (authed && tab === "customers") loadCustomers(); }, [tab, authed]);
 
   async function updateStatus(reference: string, status: string) {
     const body: Record<string, string> = { status };
-    if (status === "shipped" && trackingNumber) {
-      body.tracking_number = trackingNumber;
-    }
-    await api(`/admin/orders/${reference}/status`, {
+    if (status === "shipped" && trackingNumber) body.tracking_number = trackingNumber;
+    await api(`orders/${reference}/status`, {
       method: "PATCH",
       body: JSON.stringify(body),
     });
@@ -97,49 +135,53 @@ export function AdminClient() {
     if (selected?.reference === reference) setSelected({ ...selected, status });
   }
 
-  async function updateStock(slug: string, field: string, value: number) {
-    const item = inventory.find(i => i.slug === slug);
-    if (!item) return;
-    await api(`/admin/inventory/${slug}`, {
+  async function updateSubStatus(id: number, status: string) {
+    await api(`subscriptions/${id}/status`, {
       method: "PATCH",
-      body: JSON.stringify({ ...item, [field]: value }),
+      body: JSON.stringify({ status }),
     });
+    loadData();
+    if (selectedSub?.id === id) setSelectedSub({ ...selectedSub, status });
+  }
+
+  async function updateInventory(slug: string, stock: any) {
+    await api(`inventory/${slug}`, { method: "PATCH", body: JSON.stringify(stock) });
     loadData();
   }
 
-  // ── LOGIN ──
+  const filteredOrders = orders.filter(o =>
+    (!filterStatus || o.status === filterStatus) &&
+    (!search || o.customer_name?.toLowerCase().includes(search.toLowerCase()) ||
+     o.customer_email?.toLowerCase().includes(search.toLowerCase()) ||
+     o.reference?.toLowerCase().includes(search.toLowerCase()))
+  );
+
   if (!authed) {
     return (
-      <div className="min-h-screen bg-ink flex items-center justify-center px-6">
-        <div className="bg-white-warm w-full max-w-[380px] p-10">
+      <div className="min-h-screen bg-cream flex items-center justify-center px-6">
+        <div className="w-full max-w-[360px]">
           <div className="text-center mb-8">
-            <div className="mb-3 flex justify-center">
-          <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8 text-gold" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/>
-          </svg>
-        </div>
-            <h1 className="font-display text-2xl font-normal text-ink">Panel Admin</h1>
-            <p className="text-sm text-brown-light mt-1">Maximilien Coffee</p>
+            <p className="text-[10px] tracking-[4px] uppercase text-gold font-semibold mb-2">Maximilien Coffee</p>
+            <h1 className="font-display text-3xl font-light text-ink">Panel Admin</h1>
           </div>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-[10px] font-semibold tracking-[0.18em] uppercase text-brown-light mb-1.5">
-                Llave de acceso
-              </label>
-              <input
-                type="password" value={key}
-                onChange={e => setKey(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && login()}
-                placeholder="mc-admin-..."
-                className="w-full px-4 py-3 border border-cream-3 outline-none focus:border-gold text-sm"
-              />
-            </div>
-            {error && <p className="text-red-600 text-xs">{error}</p>}
+          <div className="bg-white-warm border border-cream-3 p-8">
+            <label className="block text-[10px] tracking-[2px] uppercase text-brown-light mb-2">Llave de acceso</label>
+            <input
+              type="password"
+              value={key}
+              onChange={e => setKey(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && login()}
+              className="w-full border border-cream-3 px-4 py-3 text-sm outline-none focus:border-gold bg-cream"
+              placeholder="••••••••••••"
+              autoFocus
+            />
+            {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
             <button
-              onClick={login} disabled={loading || !key}
-              className="w-full py-3.5 bg-gold text-ink text-[11px] font-semibold tracking-[0.16em] uppercase hover:bg-gold-light transition-colors disabled:opacity-50"
+              onClick={login}
+              disabled={loading}
+              className="w-full mt-4 py-3 bg-ink text-cream text-[11px] font-semibold tracking-[2px] uppercase hover:bg-ink/90 transition-colors disabled:opacity-50"
             >
-              {loading ? "Verificando..." : "Entrar"}
+              {loading ? "Verificando..." : "Ingresar"}
             </button>
           </div>
         </div>
@@ -147,261 +189,419 @@ export function AdminClient() {
     );
   }
 
-  // ── PANEL ──
+  const TAB_ITEMS: { id: Tab; label: string }[] = [
+    { id: "dashboard", label: "Dashboard" },
+    { id: "orders", label: `Pedidos ${orders.length > 0 ? `(${orders.length})` : ""}` },
+    { id: "subscriptions", label: `Suscripciones ${subscriptions.length > 0 ? `(${subscriptions.length})` : ""}` },
+    { id: "customers", label: "Clientes" },
+    { id: "inventory", label: "Inventario" },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-warm">
+    <div className="min-h-screen bg-cream">
       {/* Header */}
-      <div className="bg-ink px-6 md:px-10 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-xl"></span>
-          <div>
-            <div className="text-[12px] font-semibold tracking-[0.18em] uppercase text-gold">Maximilien Coffee</div>
-            <div className="text-[10px] text-cream/30">Panel de Administración</div>
-          </div>
+      <div className="bg-ink border-b border-white-warm/10 px-6 py-4 flex items-center justify-between">
+        <div>
+          <p className="text-[9px] tracking-[3px] uppercase text-gold font-semibold">Maximilien Coffee</p>
+          <p className="text-white-warm text-sm font-light">Panel de Administración</p>
         </div>
-        <button onClick={loadData} className="text-[11px] text-cream/40 hover:text-gold transition-colors">
-          ↻ Actualizar
+        <button onClick={loadData} className="text-gold/60 hover:text-gold text-[11px] transition-colors">
+          Actualizar
         </button>
       </div>
 
-      {/* Stats rápidas */}
-      {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-cream-3 border-b border-cream-3">
-          {[
-            { label: "Pedidos pagados", value: stats.paid_orders, color: "#3b82f6" },
-            { label: "Pendientes",      value: stats.pending_orders, color: "#f59e0b" },
-            { label: "Despachados",     value: stats.shipped_orders, color: "#06b6d4" },
-            { label: "Ingresos totales",value: formatCOP(stats.total_revenue), color: "#C8A84A" },
-          ].map(s => (
-            <div key={s.label} className="bg-white-warm px-6 py-5">
-              <div className="text-[10px] font-medium tracking-[0.14em] uppercase text-brown-light mb-1">{s.label}</div>
-              <div className="font-display text-2xl font-normal" style={{ color: s.color }}>{s.value}</div>
-            </div>
+      {/* Tabs */}
+      <div className="bg-white-warm border-b border-cream-3 px-6 overflow-x-auto">
+        <div className="flex gap-0 min-w-max">
+          {TAB_ITEMS.map(t => (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className={`px-5 py-3.5 text-[11px] font-semibold tracking-[0.08em] uppercase border-b-2 transition-colors whitespace-nowrap ${
+                tab === t.id ? "border-gold text-ink" : "border-transparent text-brown-light hover:text-brown"
+              }`}>
+              {t.label}
+            </button>
           ))}
         </div>
-      )}
-
-      {/* Tabs */}
-      <div className="flex border-b border-cream-3 bg-white-warm px-6">
-        {(["orders","inventory","stats"] as const).map(t => (
-          <button key={t} onClick={() => setTab(t)}
-            className={`px-5 py-3.5 text-[11px] font-medium tracking-[0.1em] uppercase border-b-2 transition-colors ${
-              tab === t ? "border-gold text-gold" : "border-transparent text-brown-light hover:text-ink"
-            }`}>
-            {t === "orders" ? "Pedidos" : t === "inventory" ? "Inventario" : "Estadísticas"}
-          </button>
-        ))}
       </div>
 
-      <div className="p-6 md:p-8 max-w-[1400px] mx-auto">
+      <div className="max-w-[1200px] mx-auto px-6 py-8">
 
-        {/* ── PEDIDOS ── */}
-        {tab === "orders" && (
-          <div>
-            {/* Filtros */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {["", "pending", "paid", "processing", "shipped", "delivered", "cancelled"].map(s => (
-                <button key={s} onClick={() => setFilterStatus(s)}
-                  className={`px-4 py-2 text-[11px] font-medium border transition-colors ${
-                    filterStatus === s ? "bg-gold border-gold text-ink" : "border-cream-3 bg-white-warm text-brown hover:border-gold"
-                  }`}>
-                  {s === "" ? "Todos" : STATUS_LABELS[s]?.label}
-                </button>
-              ))}
+        {/* ── DASHBOARD ─────────────────────────────────────── */}
+        {tab === "dashboard" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-light text-ink">Dashboard</h2>
+
+            {/* KPIs Comerciales */}
+            <div>
+              <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-3 font-semibold">Comercial</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: "Ingresos totales", value: formatCOP(stats?.total_revenue || 0), sub: "pedidos pagados" },
+                  { label: "Total pedidos", value: stats?.total_orders || 0, sub: "todos los estados" },
+                  { label: "Pedidos pagados", value: stats?.paid_orders || 0, sub: "confirmados" },
+                  { label: "Pendientes", value: stats?.pending_orders || 0, sub: "por confirmar" },
+                ].map(kpi => (
+                  <div key={kpi.label} className="bg-white-warm border border-cream-3 p-5">
+                    <p className="text-[10px] tracking-[1px] uppercase text-brown-light mb-1">{kpi.label}</p>
+                    <p className="font-display text-2xl font-light text-ink">{kpi.value}</p>
+                    <p className="text-[11px] text-brown-light mt-1">{kpi.sub}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {loading ? (
-              <div className="text-center py-20 text-brown-light text-sm">Cargando pedidos...</div>
-            ) : orders.length === 0 ? (
-              <div className="text-center py-20 text-brown-light text-sm">No hay pedidos aún</div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-6 items-start">
-                {/* Lista */}
-                <div className="space-y-2">
-                  {orders.map(order => (
-                    <div key={order.reference}
-                      onClick={() => setSelected(order)}
-                      className={`bg-white-warm border p-5 cursor-pointer hover:border-gold transition-colors ${
-                        selected?.reference === order.reference ? "border-gold" : "border-cream-3"
-                      }`}>
-                      <div className="flex items-start justify-between gap-3 mb-2">
-                        <div>
-                          <div className="text-[12px] font-semibold text-ink">#{order.reference}</div>
-                          <div className="text-[12px] text-brown">{order.customer_name} · {order.customer_email}</div>
-                        </div>
-                        <div className="flex flex-col items-end gap-1 shrink-0">
-                          <span className="text-[10px] font-semibold px-2 py-1 rounded-full"
-                            style={{ background: STATUS_LABELS[order.status]?.color + "20", color: STATUS_LABELS[order.status]?.color }}>
-                            {STATUS_LABELS[order.status]?.label ?? order.status}
-                          </span>
-                          <div className="font-display text-base text-ink">{formatCOP(order.total)}</div>
-                        </div>
+            {/* KPIs Suscripciones */}
+            {subStats && (
+              <div>
+                <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-3 font-semibold">Suscripciones</p>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { label: "Activas", value: subStats.active_count || 0, sub: "suscriptores activos" },
+                    { label: "MRR", value: formatCOP(subStats.mrr || 0), sub: "ingresos recurrentes/mes" },
+                    { label: "ARR", value: formatCOP(subStats.arr || 0), sub: "proyección anual" },
+                    { label: "Retención", value: `${subStats.retention_rate || 100}%`, sub: `Churn: ${subStats.churn_rate || 0}%` },
+                  ].map(kpi => (
+                    <div key={kpi.label} className="bg-white-warm border border-cream-3 p-5">
+                      <p className="text-[10px] tracking-[1px] uppercase text-brown-light mb-1">{kpi.label}</p>
+                      <p className="font-display text-2xl font-light text-ink">{kpi.value}</p>
+                      <p className="text-[11px] text-brown-light mt-1">{kpi.sub}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Ventas por plan */}
+            {subStats?.by_plan?.length > 0 && (
+              <div className="bg-white-warm border border-cream-3 p-6">
+                <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-4 font-semibold">Suscripciones por plan</p>
+                <div className="space-y-3">
+                  {subStats.by_plan.map((p: any) => (
+                    <div key={p.plan_name} className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full bg-gold" />
+                        <span className="text-sm text-ink">{p.plan_name || "Sin plan"}</span>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <div className="text-[11px] text-brown-light">{formatDate(order.created_at)}</div>
-                        <div className="text-[11px] text-brown-light">
-                          {order.customer_city}{order.customer_dept ? `, ${order.customer_dept}` : ""}
-                        </div>
+                      <div className="flex items-center gap-6">
+                        <span className="text-sm text-brown-light">{p.count} suscriptores</span>
+                        <span className="text-sm font-semibold text-ink">{formatCOP(p.revenue)}/mes</span>
                       </div>
                     </div>
                   ))}
                 </div>
-
-                {/* Detalle */}
-                {selected && (
-                  <div className="bg-white-warm border border-cream-3 sticky top-4">
-                    <div className="px-6 py-4 border-b border-cream-3 flex items-center justify-between">
-                      <span className="font-display text-lg text-ink">Detalle del pedido</span>
-                      <button onClick={() => setSelected(null)} className="text-brown-light text-xl">×</button>
-                    </div>
-                    <div className="px-6 py-5 space-y-4">
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.16em] text-brown-light mb-1">Referencia</p>
-                        <p className="text-sm font-medium text-ink">#{selected.reference}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.16em] text-brown-light mb-1">Cliente</p>
-                        <p className="text-sm text-ink">{selected.customer_name}</p>
-                        <p className="text-xs text-brown-light">{selected.customer_email}</p>
-                        <p className="text-xs text-brown-light">{selected.customer_phone}</p>
-                      </div>
-                      {selected.customer_address && (
-                        <div>
-                          <p className="text-[10px] uppercase tracking-[0.16em] text-brown-light mb-1">Dirección</p>
-                          <p className="text-xs text-brown-light">
-                            {selected.customer_address}, {selected.customer_city}, {selected.customer_dept}
-                          </p>
-                        </div>
-                      )}
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.16em] text-brown-light mb-2">Productos</p>
-                        <div className="space-y-2">
-                          {(typeof selected.items === "string" ? JSON.parse(selected.items) : selected.items)?.map((item: any, i: number) => (
-                            <div key={i} className="flex items-start justify-between text-xs bg-cream p-3">
-                              <div>
-                                <div className="font-medium text-ink">{item.name}</div>
-                                <div className="text-brown-light">{item.weight} · {item.grind}</div>
-                                {item.sku && <div className="text-gold font-mono text-[10px] mt-0.5">{item.sku}</div>}
-                              </div>
-                              <div className="text-right shrink-0">
-                                <div className="text-ink font-medium">×{item.quantity}</div>
-                                <div className="text-brown-light">{formatCOP(item.unit_price * item.quantity)}</div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                      <div className="border-t border-cream-3 pt-3 flex justify-between">
-                        <span className="text-sm font-medium text-ink">Total</span>
-                        <span className="font-display text-xl text-ink">{formatCOP(selected.total)}</span>
-                      </div>
-                      <div>
-                        <p className="text-[10px] uppercase tracking-[0.16em] text-brown-light mb-2">Cambiar estado</p>
-                        {/* Campo número de guía cuando se va a despachar */}
-              <div className="mb-3">
-                <label className="block text-[10px] uppercase tracking-[0.14em] text-brown-light mb-1.5">
-                  Número de guía (opcional)
-                </label>
-                <input
-                  type="text"
-                  value={trackingNumber}
-                  onChange={e => setTrackingNumber(e.target.value)}
-                  placeholder="Ej: 1234567890"
-                  className="w-full px-3 py-2 border border-cream-3 text-xs outline-none focus:border-gold"
-                />
-                <p className="text-[10px] text-brown-light mt-1">Se incluirá en el email de despacho</p>
               </div>
-              <div className="grid grid-cols-2 gap-1.5">
-                          {Object.entries(STATUS_LABELS).map(([s, info]) => (
-                            <button key={s} onClick={() => updateStatus(selected.reference, s)}
-                              className={`py-2 px-3 text-[10px] font-semibold border transition-colors ${
-                                selected.status === s
-                                  ? "text-white border-transparent"
-                                  : "border-cream-3 text-brown hover:border-gold"
-                              }`}
-                              style={selected.status === s ? { background: info.color } : {}}>
-                              {info.label}
-                            </button>
-                          ))}
+            )}
+
+            {/* Ventas diarias */}
+            {stats?.daily_revenue?.length > 0 && (
+              <div className="bg-white-warm border border-cream-3 p-6">
+                <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-4 font-semibold">Ingresos últimos 30 días</p>
+                <div className="space-y-2">
+                  {stats.daily_revenue.slice(-10).map((d: any) => (
+                    <div key={d.date} className="flex items-center gap-3">
+                      <span className="text-[11px] text-brown-light w-24">{formatDate(d.date)}</span>
+                      <div className="flex-1 bg-cream rounded-full h-1.5">
+                        <div className="bg-gold h-1.5 rounded-full"
+                          style={{ width: `${Math.min(100, (d.revenue / (stats.total_revenue || 1)) * 500)}%` }} />
+                      </div>
+                      <span className="text-[11px] font-semibold text-ink w-24 text-right">{formatCOP(d.revenue)}</span>
+                      <span className="text-[10px] text-brown-light w-16 text-right">{d.orders} pedidos</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── PEDIDOS ──────────────────────────────────────── */}
+        {tab === "orders" && (
+          <div className="flex gap-6">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-3 mb-4">
+                <input
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Buscar por nombre, email o referencia..."
+                  className="flex-1 border border-cream-3 px-3 py-2 text-[12px] outline-none focus:border-gold bg-white-warm"
+                />
+                <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+                  className="border border-cream-3 px-3 py-2 text-[12px] outline-none bg-white-warm">
+                  <option value="">Todos los estados</option>
+                  {Object.entries(STATUS_LABELS).map(([v, { label }]) => (
+                    <option key={v} value={v}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                {filteredOrders.map(o => (
+                  <div key={o.reference}
+                    onClick={() => setSelected(selected?.reference === o.reference ? null : o)}
+                    className={`bg-white-warm border p-4 cursor-pointer hover:border-gold/40 transition-colors ${
+                      selected?.reference === o.reference ? "border-gold" : "border-cream-3"
+                    }`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-[11px] font-semibold text-ink">{o.reference}</span>
+                          <StatusBadge status={o.status} map={STATUS_LABELS} />
                         </div>
+                        <p className="text-[13px] text-brown mt-1">{o.customer_name}</p>
+                        <p className="text-[11px] text-brown-light">{o.customer_email} · {o.customer_city}</p>
+                        {o.tracking_number && (
+                          <p className="text-[11px] text-gold mt-1">Guía: {o.tracking_number} · {o.carrier}</p>
+                        )}
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-[13px] font-semibold text-ink">{formatCOP(o.total)}</p>
+                        <p className="text-[10px] text-brown-light mt-1">{formatDate(o.created_at)}</p>
                       </div>
                     </div>
+                  </div>
+                ))}
+                {filteredOrders.length === 0 && (
+                  <div className="bg-white-warm border border-cream-3 p-10 text-center text-brown-light text-sm">
+                    No hay pedidos con estos filtros
                   </div>
                 )}
               </div>
-            )}
-          </div>
-        )}
-
-        {/* ── INVENTARIO ── */}
-        {tab === "inventory" && (
-          <div className="max-w-[800px]">
-            <h2 className="font-display text-xl text-ink mb-6">Inventario actual</h2>
-            <div className="space-y-4">
-              {inventory.map(item => (
-                <div key={item.slug} className="bg-white-warm border border-cream-3 p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <div className="font-display text-lg text-ink">{item.name}</div>
-                      <div className="text-[11px] text-gold font-mono">{item.sku_base}-*</div>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    {[
-                      { field: "stock_250g", label: "250g", sku: `${item.sku_base}-250G` },
-                      { field: "stock_454g", label: "454g", sku: `${item.sku_base}-454G` },
-                      { field: "stock_500g", label: "500g", sku: `${item.sku_base}-500G` },
-                    ].map(({ field, label, sku }) => (
-                      <div key={field}>
-                        <div className="text-[10px] uppercase tracking-[0.14em] text-brown-light mb-1">{label}</div>
-                        <div className="text-[9px] text-gold font-mono mb-2">{sku}</div>
-                        <input
-                          type="number" min="0"
-                          defaultValue={item[field]}
-                          onBlur={e => updateStock(item.slug, field, parseInt(e.target.value))}
-                          className="w-full px-3 py-2 border border-cream-3 text-sm outline-none focus:border-gold"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
             </div>
-          </div>
-        )}
 
-        {/* ── ESTADÍSTICAS ── */}
-        {tab === "stats" && stats && (
-          <div className="max-w-[800px]">
-            <h2 className="font-display text-xl text-ink mb-6">Estadísticas — últimos 30 días</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-              {[
-                { label: "Total pedidos",   value: stats.total_orders },
-                { label: "Pagados",          value: stats.paid_orders },
-                { label: "Pendientes",       value: stats.pending_orders },
-                { label: "Despachados",      value: stats.shipped_orders },
-                { label: "Ingresos totales", value: formatCOP(stats.total_revenue) },
-              ].map(s => (
-                <div key={s.label} className="bg-white-warm border border-cream-3 p-5">
-                  <div className="text-[10px] uppercase tracking-[0.14em] text-brown-light mb-1">{s.label}</div>
-                  <div className="font-display text-2xl text-ink">{s.value}</div>
+            {/* Panel detalle pedido */}
+            {selected && (
+              <div className="w-80 shrink-0 bg-white-warm border border-cream-3 p-5 h-fit sticky top-4">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-[10px] tracking-[2px] uppercase text-brown-light font-semibold">Detalle pedido</p>
+                  <button onClick={() => setSelected(null)} className="text-brown-light hover:text-ink text-lg leading-none">×</button>
                 </div>
-              ))}
-            </div>
-            {stats.daily_revenue?.length > 0 && (
-              <div className="bg-white-warm border border-cream-3 p-6">
-                <h3 className="font-display text-base text-ink mb-4">Ventas diarias</h3>
-                <div className="space-y-2">
-                  {stats.daily_revenue.map((d: any) => (
-                    <div key={d.date} className="flex items-center justify-between text-sm">
-                      <span className="text-brown-light">{new Date(d.date).toLocaleDateString("es-CO", { day:"2-digit", month:"short" })}</span>
-                      <span className="text-brown-light">{d.orders} pedido{d.orders !== 1 ? "s" : ""}</span>
-                      <span className="font-medium text-ink">{formatCOP(parseInt(d.revenue))}</span>
+
+                <div className="space-y-3 text-[12px] mb-5">
+                  <div><span className="text-brown-light">Referencia:</span> <strong className="text-ink ml-1">{selected.reference}</strong></div>
+                  <div><span className="text-brown-light">Cliente:</span> <strong className="text-ink ml-1">{selected.customer_name}</strong></div>
+                  <div><span className="text-brown-light">Email:</span> <span className="text-ink ml-1">{selected.customer_email}</span></div>
+                  <div><span className="text-brown-light">Teléfono:</span> <span className="text-ink ml-1">{selected.customer_phone}</span></div>
+                  <div><span className="text-brown-light">Dirección:</span> <span className="text-ink ml-1">{selected.customer_address}</span></div>
+                  <div><span className="text-brown-light">Ciudad:</span> <span className="text-ink ml-1">{selected.customer_city}, {selected.customer_dept}</span></div>
+                  <div><span className="text-brown-light">Total:</span> <strong className="text-ink ml-1">{formatCOP(selected.total)}</strong></div>
+                  <div className="flex items-center gap-2"><span className="text-brown-light">Estado:</span> <StatusBadge status={selected.status} map={STATUS_LABELS} /></div>
+                  {selected.tracking_number && (
+                    <div><span className="text-brown-light">Guía:</span> <strong className="text-gold ml-1">{selected.tracking_number}</strong></div>
+                  )}
+                </div>
+
+                {/* Productos */}
+                <div className="border-t border-cream-3 pt-4 mb-5">
+                  <p className="text-[10px] tracking-[2px] uppercase text-brown-light font-semibold mb-2">Productos</p>
+                  {(typeof selected.items === "string" ? JSON.parse(selected.items) : selected.items || []).map((item: any, i: number) => (
+                    <div key={i} className="flex justify-between py-1.5 border-b border-cream-3 last:border-0">
+                      <span className="text-[11px] text-ink">{item.name} · {item.weight}<br/><span className="text-brown-light">{item.grind}</span></span>
+                      <span className="text-[11px] font-semibold text-ink">×{item.quantity}</span>
                     </div>
+                  ))}
+                </div>
+
+                {/* Campo número de guía */}
+                <div className="mb-4">
+                  <label className="block text-[10px] uppercase tracking-[0.14em] text-brown-light mb-1.5">Número de guía</label>
+                  <input
+                    type="text"
+                    value={trackingNumber}
+                    onChange={e => setTrackingNumber(e.target.value)}
+                    placeholder="Ej: 1234567890"
+                    className="w-full px-3 py-2 border border-cream-3 text-xs outline-none focus:border-gold bg-cream"
+                  />
+                  <p className="text-[10px] text-brown-light mt-1">Se incluirá en el email de despacho</p>
+                </div>
+
+                {/* Cambiar estado */}
+                <div className="grid grid-cols-2 gap-1.5">
+                  {Object.entries(STATUS_LABELS).filter(([v]) => v !== selected.status && v !== "declined").map(([v, { label, color }]) => (
+                    <button key={v} onClick={() => updateStatus(selected.reference, v)}
+                      style={{ borderColor: color + "40", color }}
+                      className="py-1.5 border text-[10px] font-semibold uppercase tracking-wide hover:opacity-80 transition-opacity">
+                      {label}
+                    </button>
                   ))}
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── SUSCRIPCIONES ─────────────────────────────────── */}
+        {tab === "subscriptions" && (
+          <div className="space-y-6">
+            <h2 className="font-display text-2xl font-light text-ink">Suscripciones</h2>
+
+            {/* KPIs */}
+            {subStats && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: "Activas", value: subStats.active_count || 0, color: "#22c55e" },
+                  { label: "MRR", value: formatCOP(subStats.mrr || 0), color: "#C8A84A" },
+                  { label: "ARR", value: formatCOP(subStats.arr || 0), color: "#6366f1" },
+                  { label: "Churn", value: `${subStats.churn_rate || 0}%`, color: "#ef4444" },
+                ].map(kpi => (
+                  <div key={kpi.label} className="bg-white-warm border border-cream-3 p-5">
+                    <p className="text-[10px] tracking-[1px] uppercase text-brown-light mb-1">{kpi.label}</p>
+                    <p className="font-display text-2xl font-light" style={{ color: kpi.color }}>{kpi.value}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Lista suscripciones */}
+            <div className="flex gap-6">
+              <div className="flex-1 space-y-2">
+                {subscriptions.length === 0 ? (
+                  <div className="bg-white-warm border border-cream-3 p-10 text-center text-brown-light text-sm">
+                    No hay suscripciones registradas
+                  </div>
+                ) : subscriptions.map((s: any) => (
+                  <div key={s.id}
+                    onClick={() => setSelectedSub(selectedSub?.id === s.id ? null : s)}
+                    className={`bg-white-warm border p-4 cursor-pointer hover:border-gold/40 transition-colors ${
+                      selectedSub?.id === s.id ? "border-gold" : "border-cream-3"
+                    }`}>
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[13px] font-semibold text-ink">{s.customer_name}</span>
+                          <StatusBadge status={s.status} map={SUB_STATUS_LABELS} />
+                        </div>
+                        <p className="text-[11px] text-brown-light mt-0.5">{s.customer_email} · {s.customer_city}</p>
+                        <p className="text-[11px] text-brown mt-1">{s.plan_name || s.product_name}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[13px] font-semibold text-ink">{formatCOP(s.price || s.price_discounted)}/mes</p>
+                        <p className="text-[10px] text-brown-light mt-1">{formatDate(s.created_at)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Panel detalle suscripción */}
+              {selectedSub && (
+                <div className="w-72 shrink-0 bg-white-warm border border-cream-3 p-5 h-fit sticky top-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-[10px] tracking-[2px] uppercase text-brown-light font-semibold">Detalle</p>
+                    <button onClick={() => setSelectedSub(null)} className="text-brown-light hover:text-ink text-lg leading-none">×</button>
+                  </div>
+                  <div className="space-y-2.5 text-[12px] mb-5">
+                    <div><span className="text-brown-light">Cliente:</span> <strong className="text-ink ml-1">{selectedSub.customer_name}</strong></div>
+                    <div><span className="text-brown-light">Email:</span> <span className="text-ink ml-1">{selectedSub.customer_email}</span></div>
+                    <div><span className="text-brown-light">Teléfono:</span> <span className="text-ink ml-1">{selectedSub.customer_phone}</span></div>
+                    <div><span className="text-brown-light">Plan:</span> <span className="text-ink ml-1">{selectedSub.plan_name || selectedSub.product_name}</span></div>
+                    <div><span className="text-brown-light">Valor:</span> <strong className="text-ink ml-1">{formatCOP(selectedSub.price || selectedSub.price_discounted)}/mes</strong></div>
+                    <div><span className="text-brown-light">Ciudad:</span> <span className="text-ink ml-1">{selectedSub.customer_city}</span></div>
+                    <div className="flex items-center gap-2"><span className="text-brown-light">Estado:</span> <StatusBadge status={selectedSub.status} map={SUB_STATUS_LABELS} /></div>
+                    <div><span className="text-brown-light">Desde:</span> <span className="text-ink ml-1">{formatDate(selectedSub.created_at)}</span></div>
+                  </div>
+                  <p className="text-[10px] tracking-[2px] uppercase text-brown-light font-semibold mb-2">Cambiar estado</p>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {Object.entries(SUB_STATUS_LABELS).filter(([v]) => v !== selectedSub.status).map(([v, { label, color }]) => (
+                      <button key={v} onClick={() => updateSubStatus(selectedSub.id, v)}
+                        style={{ borderColor: color + "40", color }}
+                        className="py-1.5 border text-[10px] font-semibold uppercase tracking-wide hover:opacity-80 transition-opacity">
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── CLIENTES ─────────────────────────────────────── */}
+        {tab === "customers" && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <h2 className="font-display text-2xl font-light text-ink flex-1">Clientes</h2>
+              <input
+                value={search}
+                onChange={e => { setSearch(e.target.value); loadCustomers(); }}
+                placeholder="Buscar cliente..."
+                className="border border-cream-3 px-3 py-2 text-[12px] outline-none focus:border-gold bg-white-warm"
+              />
+            </div>
+            {customers.length === 0 ? (
+              <div className="bg-white-warm border border-cream-3 p-10 text-center">
+                <p className="text-brown-light text-sm mb-2">No hay clientes registrados aún</p>
+                <p className="text-[11px] text-brown-light">Los clientes se crean automáticamente cuando hacen su primer pedido</p>
+              </div>
+            ) : (
+              <div className="bg-white-warm border border-cream-3 overflow-hidden">
+                <table className="w-full text-[12px]">
+                  <thead className="bg-cream border-b border-cream-3">
+                    <tr>
+                      {["Nombre", "Email", "Ciudad", "Pedidos", "Total gastado", "Estado", "Desde"].map(h => (
+                        <th key={h} className="text-left px-4 py-3 text-[10px] uppercase tracking-[1px] text-brown-light font-semibold">{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-cream-3">
+                    {customers.map((c: any) => (
+                      <tr key={c.id} className="hover:bg-cream/50 transition-colors">
+                        <td className="px-4 py-3 font-medium text-ink">{c.name}</td>
+                        <td className="px-4 py-3 text-brown-light">{c.email}</td>
+                        <td className="px-4 py-3 text-brown-light">{c.city || "—"}</td>
+                        <td className="px-4 py-3 text-center">{c.total_orders || 0}</td>
+                        <td className="px-4 py-3 font-semibold text-ink">{formatCOP(c.total_spent || 0)}</td>
+                        <td className="px-4 py-3">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${c.status === "active" ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
+                            {c.status === "active" ? "Activo" : "Inactivo"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-brown-light">{formatDate(c.created_at)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── INVENTARIO ───────────────────────────────────── */}
+        {tab === "inventory" && (
+          <div className="space-y-4">
+            <h2 className="font-display text-2xl font-light text-ink">Inventario</h2>
+            <div className="grid gap-4">
+              {inventory.map((item: any) => {
+                const [s250, setS250] = useState(item.stock_250g);
+                const [s454, setS454] = useState(item.stock_454g);
+                return (
+                  <div key={item.slug} className="bg-white-warm border border-cream-3 p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <p className="font-semibold text-ink">{item.name}</p>
+                        <p className="text-[11px] text-brown-light mt-0.5">SKU base: {item.sku_base}</p>
+                      </div>
+                      <button
+                        onClick={() => updateInventory(item.slug, { stock_250g: s250, stock_454g: s454, stock_500g: 0 })}
+                        className="px-4 py-2 bg-ink text-cream text-[11px] font-semibold uppercase tracking-wide hover:bg-ink/90 transition-colors">
+                        Guardar
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      {[
+                        { label: "Stock 250g", val: s250, set: setS250 },
+                        { label: "Stock 454g", val: s454, set: setS454 },
+                      ].map(f => (
+                        <div key={f.label}>
+                          <label className="block text-[10px] uppercase tracking-[1px] text-brown-light mb-1.5">{f.label}</label>
+                          <input type="number" value={f.val} onChange={e => f.set(Number(e.target.value))}
+                            className="w-full border border-cream-3 px-3 py-2 text-sm outline-none focus:border-gold bg-cream" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 

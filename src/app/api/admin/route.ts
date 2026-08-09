@@ -7,7 +7,6 @@ function getAdminKey(): string {
 }
 
 function verifyAuth(req: NextRequest): boolean {
-  // Soporta tanto header Authorization como query param (retrocompatibilidad)
   const authHeader = req.headers.get("authorization") || "";
   const keyFromHeader = authHeader.replace("Bearer ", "");
   const keyFromQuery = req.nextUrl.searchParams.get("key") || "";
@@ -15,22 +14,38 @@ function verifyAuth(req: NextRequest): boolean {
   return keyFromHeader === adminKey || keyFromQuery === adminKey;
 }
 
-export async function GET(req: NextRequest) {
+async function proxyRequest(req: NextRequest, method: string, body?: any) {
   if (!verifyAuth(req)) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
+  // path puede ser: "stats", "orders", "orders/MC-xxx/status", "customers", etc.
   const path = req.nextUrl.searchParams.get("path") || "stats";
+  // prefix puede ser "admin" (default) o "api/analytics"
+  const prefix = req.nextUrl.searchParams.get("prefix") || "admin";
 
   try {
-    const res = await fetch(`${BACKEND}/admin/${path}`, {
-      headers: { "X-Admin-Key": getAdminKey() },
-    });
+    const fetchOpts: RequestInit = {
+      method,
+      headers: { "X-Admin-Key": getAdminKey(), "Content-Type": "application/json" },
+    };
+    if (body) fetchOpts.body = JSON.stringify(body);
+
+    const res = await fetch(`${BACKEND}/${prefix}/${path}`, fetchOpts);
     const data = await res.json();
     return NextResponse.json(data);
   } catch {
     return NextResponse.json({ error: "Error conectando al backend" }, { status: 502 });
   }
+}
+
+export async function GET(req: NextRequest) {
+  return proxyRequest(req, "GET");
+}
+
+export async function POST(req: NextRequest) {
+  const body = await req.json().catch(() => ({}));
+  return proxyRequest(req, "POST", body);
 }
 
 export async function PATCH(req: NextRequest) {
@@ -39,10 +54,11 @@ export async function PATCH(req: NextRequest) {
   }
 
   const path = req.nextUrl.searchParams.get("path") || "";
+  const prefix = req.nextUrl.searchParams.get("prefix") || "admin";
   const body = await req.json();
 
   try {
-    const res = await fetch(`${BACKEND}/admin/${path}`, {
+    const res = await fetch(`${BACKEND}/${prefix}/${path}`, {
       method: "PATCH",
       headers: { "X-Admin-Key": getAdminKey(), "Content-Type": "application/json" },
       body: JSON.stringify(body),
