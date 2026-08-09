@@ -1,8 +1,5 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-
 // Inventario por SKU — producto + peso + molido
 function InventoryTab({ authKey }: { authKey: string }) {
   const [skus, setSkus] = useState<any[]>([]);
