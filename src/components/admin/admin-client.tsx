@@ -1,3 +1,61 @@
+
+// Componente separado para inventario — evita hooks dentro de .map()
+function InventoryTab({ inventory, onUpdate }: { inventory: any[]; onUpdate: (slug: string, stock: any) => void }) {
+  const [stocks, setStocks] = useState<Record<string, { s250: number; s454: number }>>({});
+
+  useEffect(() => {
+    const initial: Record<string, { s250: number; s454: number }> = {};
+    inventory.forEach(item => {
+      initial[item.slug] = { s250: item.stock_250g, s454: item.stock_454g };
+    });
+    setStocks(initial);
+  }, [inventory]);
+
+  function setStock(slug: string, field: "s250" | "s454", val: number) {
+    setStocks(prev => ({ ...prev, [slug]: { ...prev[slug], [field]: val } }));
+  }
+
+  return (
+    <div className="space-y-4">
+      <h2 className="font-display text-2xl font-light text-ink">Inventario</h2>
+      <div className="grid gap-4">
+        {inventory.map((item: any) => {
+          const stock = stocks[item.slug] || { s250: item.stock_250g, s454: item.stock_454g };
+          return (
+            <div key={item.slug} className="bg-white-warm border border-cream-3 p-6">
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <p className="font-semibold text-ink">{item.name}</p>
+                  <p className="text-[11px] text-brown-light mt-0.5">SKU base: {item.sku_base}</p>
+                </div>
+                <button
+                  onClick={() => onUpdate(item.slug, { stock_250g: stock.s250, stock_454g: stock.s454, stock_500g: 0 })}
+                  className="px-4 py-2 bg-ink text-cream text-[11px] font-semibold uppercase tracking-wide hover:bg-ink/90 transition-colors">
+                  Guardar
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[1px] text-brown-light mb-1.5">Stock 250g</label>
+                  <input type="number" value={stock.s250}
+                    onChange={e => setStock(item.slug, "s250", Number(e.target.value))}
+                    className="w-full border border-cream-3 px-3 py-2 text-sm outline-none focus:border-gold bg-cream" />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-[1px] text-brown-light mb-1.5">Stock 454g</label>
+                  <input type="number" value={stock.s454}
+                    onChange={e => setStock(item.slug, "s454", Number(e.target.value))}
+                    className="w-full border border-cream-3 px-3 py-2 text-sm outline-none focus:border-gold bg-cream" />
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -567,42 +625,7 @@ export function AdminClient() {
 
         {/* ── INVENTARIO ───────────────────────────────────── */}
         {tab === "inventory" && (
-          <div className="space-y-4">
-            <h2 className="font-display text-2xl font-light text-ink">Inventario</h2>
-            <div className="grid gap-4">
-              {inventory.map((item: any) => {
-                const [s250, setS250] = useState(item.stock_250g);
-                const [s454, setS454] = useState(item.stock_454g);
-                return (
-                  <div key={item.slug} className="bg-white-warm border border-cream-3 p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <p className="font-semibold text-ink">{item.name}</p>
-                        <p className="text-[11px] text-brown-light mt-0.5">SKU base: {item.sku_base}</p>
-                      </div>
-                      <button
-                        onClick={() => updateInventory(item.slug, { stock_250g: s250, stock_454g: s454, stock_500g: 0 })}
-                        className="px-4 py-2 bg-ink text-cream text-[11px] font-semibold uppercase tracking-wide hover:bg-ink/90 transition-colors">
-                        Guardar
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      {[
-                        { label: "Stock 250g", val: s250, set: setS250 },
-                        { label: "Stock 454g", val: s454, set: setS454 },
-                      ].map(f => (
-                        <div key={f.label}>
-                          <label className="block text-[10px] uppercase tracking-[1px] text-brown-light mb-1.5">{f.label}</label>
-                          <input type="number" value={f.val} onChange={e => f.set(Number(e.target.value))}
-                            className="w-full border border-cream-3 px-3 py-2 text-sm outline-none focus:border-gold bg-cream" />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <InventoryTab inventory={inventory} onUpdate={updateInventory} />
         )}
 
       </div>
