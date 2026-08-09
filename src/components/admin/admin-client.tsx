@@ -1,3 +1,4 @@
+"use client";
 
 // Componente separado para inventario — evita hooks dentro de .map()
 function InventoryTab({ inventory, onUpdate }: { inventory: any[]; onUpdate: (slug: string, stock: any) => void }) {
@@ -55,8 +56,6 @@ function InventoryTab({ inventory, onUpdate }: { inventory: any[]; onUpdate: (sl
     </div>
   );
 }
-
-"use client";
 
 import { useState, useEffect, useCallback } from "react";
 
