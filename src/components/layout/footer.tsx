@@ -3,7 +3,8 @@ import Image from "next/image";
 
 export function Footer() {
   return (
-    <div className="divider-gold" />
+    <>
+  <div className="divider-gold" />
   <footer className="bg-ink-2 px-6 md:px-16 py-8 flex flex-col md:flex-row items-center justify-between gap-5 text-center md:text-left">
       <div className="flex items-center gap-2.5">
         <Image src="/images/logo.jpg" alt="Maximilien Coffee" width={32} height={32} className="w-8 h-8 rounded-full object-cover" />
@@ -43,5 +44,6 @@ export function Footer() {
     </div>
   </div>
 </footer>
+  </>
   );
 }
