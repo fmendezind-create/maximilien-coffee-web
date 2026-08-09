@@ -1,58 +1,98 @@
 "use client";
 
-// Componente separado para inventario — evita hooks dentro de .map()
-function InventoryTab({ inventory, onUpdate }: { inventory: any[]; onUpdate: (slug: string, stock: any) => void }) {
-  const [stocks, setStocks] = useState<Record<string, { s250: number; s454: number }>>({});
+// Inventario por SKU — producto + peso + molido
+function InventoryTab({ authKey }: { authKey: string }) {
+  const [skus, setSkus] = useState<any[]>([]);
+  const [stocks, setStocks] = useState<Record<string, number>>({});
+  const [saving, setSaving] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const initial: Record<string, { s250: number; s454: number }> = {};
-    inventory.forEach(item => {
-      initial[item.slug] = { s250: item.stock_250g, s454: item.stock_454g };
-    });
-    setStocks(initial);
-  }, [inventory]);
+    fetch("/api/admin?path=inventory/skus", {
+      headers: { "Authorization": `Bearer ${authKey}` }
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setSkus(data);
+          const initial: Record<string, number> = {};
+          data.forEach((s: any) => { initial[s.sku] = s.stock || 0; });
+          setStocks(initial);
+        }
+      })
+      .finally(() => setLoading(false));
+  }, [authKey]);
 
-  function setStock(slug: string, field: "s250" | "s454", val: number) {
-    setStocks(prev => ({ ...prev, [slug]: { ...prev[slug], [field]: val } }));
+  async function saveStock(sku: string) {
+    setSaving(prev => ({ ...prev, [sku]: true }));
+    try {
+      await fetch(`/api/admin?path=inventory/skus/${sku}`, {
+        method: "PATCH",
+        headers: { "Authorization": `Bearer ${authKey}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ stock: stocks[sku] || 0 }),
+      });
+    } finally {
+      setSaving(prev => ({ ...prev, [sku]: false }));
+    }
   }
 
+  // Agrupar por producto
+  const grouped: Record<string, { name: string; skus: any[] }> = {};
+  skus.forEach(s => {
+    if (!grouped[s.slug]) grouped[s.slug] = { name: s.product_name || s.slug, skus: [] };
+    grouped[s.slug].skus.push(s);
+  });
+
+  const GRIND_LABELS: Record<string, string> = {
+    "En grano": "Grano", "Filtro": "Filtro", "Espresso": "Espresso",
+    "Prensa francesa": "Prensa", "Moka": "Moka",
+  };
+
+  if (loading) return (
+    <div className="py-20 text-center text-brown-light text-sm">Cargando inventario...</div>
+  );
+
   return (
-    <div className="space-y-4">
-      <h2 className="font-display text-2xl font-light text-ink">Inventario</h2>
-      <div className="grid gap-4">
-        {inventory.map((item: any) => {
-          const stock = stocks[item.slug] || { s250: item.stock_250g, s454: item.stock_454g };
-          return (
-            <div key={item.slug} className="bg-white-warm border border-cream-3 p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <p className="font-semibold text-ink">{item.name}</p>
-                  <p className="text-[11px] text-brown-light mt-0.5">SKU base: {item.sku_base}</p>
-                </div>
-                <button
-                  onClick={() => onUpdate(item.slug, { stock_250g: stock.s250, stock_454g: stock.s454, stock_500g: 0 })}
-                  className="px-4 py-2 bg-ink text-cream text-[11px] font-semibold uppercase tracking-wide hover:bg-ink/90 transition-colors">
-                  Guardar
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[10px] uppercase tracking-[1px] text-brown-light mb-1.5">Stock 250g</label>
-                  <input type="number" value={stock.s250}
-                    onChange={e => setStock(item.slug, "s250", Number(e.target.value))}
-                    className="w-full border border-cream-3 px-3 py-2 text-sm outline-none focus:border-gold bg-cream" />
-                </div>
-                <div>
-                  <label className="block text-[10px] uppercase tracking-[1px] text-brown-light mb-1.5">Stock 454g</label>
-                  <input type="number" value={stock.s454}
-                    onChange={e => setStock(item.slug, "s454", Number(e.target.value))}
-                    className="w-full border border-cream-3 px-3 py-2 text-sm outline-none focus:border-gold bg-cream" />
-                </div>
-              </div>
-            </div>
-          );
-        })}
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="font-display text-2xl font-light text-ink">Inventario por SKU</h2>
+        <p className="text-[11px] text-brown-light">Stock diferenciado por producto, peso y molido</p>
       </div>
+
+      {Object.entries(grouped).map(([slug, group]) => (
+        <div key={slug} className="bg-white-warm border border-cream-3">
+          <div className="px-6 py-4 border-b border-cream-3 bg-cream/50">
+            <p className="font-semibold text-ink">{group.name}</p>
+          </div>
+          <div className="divide-y divide-cream-3">
+            {group.skus.map(s => (
+              <div key={s.sku} className="px-6 py-4 flex items-center gap-4">
+                <div className="flex-1 min-w-0">
+                  <p className="text-[12px] font-medium text-ink">{s.weight} · {GRIND_LABELS[s.grind] || s.grind}</p>
+                  <p className="text-[10px] text-brown-light mt-0.5 font-mono">{s.sku}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={0}
+                    value={stocks[s.sku] ?? 0}
+                    onChange={e => setStocks(prev => ({ ...prev, [s.sku]: Number(e.target.value) }))}
+                    className="w-20 border border-cream-3 px-2 py-1.5 text-sm text-center outline-none focus:border-gold bg-cream"
+                  />
+                  <span className="text-[10px] text-brown-light">unidades</span>
+                  <button
+                    onClick={() => saveStock(s.sku)}
+                    disabled={saving[s.sku]}
+                    className="px-3 py-1.5 bg-ink text-cream text-[10px] font-semibold uppercase tracking-wide hover:bg-ink/90 transition-colors disabled:opacity-50">
+                    {saving[s.sku] ? "..." : "Guardar"}
+                  </button>
+                </div>
+                <div className={`w-2 h-2 rounded-full ${(stocks[s.sku] ?? 0) === 0 ? "bg-red-400" : (stocks[s.sku] ?? 0) < 5 ? "bg-amber-400" : "bg-green-400"}`} />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -624,7 +664,7 @@ export function AdminClient() {
 
         {/* ── INVENTARIO ───────────────────────────────────── */}
         {tab === "inventory" && (
-          <InventoryTab inventory={inventory} onUpdate={updateInventory} />
+          <InventoryTab authKey={key} />
         )}
 
       </div>
