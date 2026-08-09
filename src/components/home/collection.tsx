@@ -9,8 +9,8 @@ export function Collection() {
   const gridRef  = useReveal<HTMLDivElement>();
 
   return (
-    <section aria-labelledby="collection-title" className="py-16 md:py-20">
-      <div ref={titleRef} className="reveal text-center px-6 mb-12 max-w-[640px] mx-auto">
+    <section aria-labelledby="collection-title" className="py-20 md:py-28">
+      <div ref={titleRef} className="reveal text-center px-6 mb-16 max-w-[640px] mx-auto">
         <p className="text-[10px] font-medium tracking-[0.28em] uppercase text-gold mb-3">
           Nuestra colección
         </p>
@@ -26,7 +26,7 @@ export function Collection() {
 
       <div
         ref={gridRef}
-        className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-cream-3 border border-cream-3 mx-0 md:mx-8"
+        className="reveal grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-cream-3 border border-cream-3 mx-0 md:mx-6 lg:mx-12"
       >
         {PRODUCTS.map(p => <ProductCard key={p.slug} product={p} />)}
       </div>

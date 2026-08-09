@@ -71,7 +71,7 @@ export function TrustBar() {
 
 function TrustItem({ icon, text, sub }: { icon: React.ReactNode; text: string; sub: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-2 px-4 py-5 text-center">
+    <div className="flex flex-col items-center justify-center gap-2.5 px-6 py-6 text-center">
       <span className="text-ink/70" aria-hidden="true">{icon}</span>
       <div>
         <div className="text-[12px] font-semibold text-ink tracking-[0.04em]">{text}</div>

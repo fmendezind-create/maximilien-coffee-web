@@ -21,83 +21,132 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <Link href={`/cafes/${product.slug}`} className="group block bg-white-warm hover:bg-cream transition-colors no-underline">
-      {/* Accent top strip */}
-      <div className="h-1" style={{ background: `linear-gradient(90deg,${colors.dark},${colors.base},${colors.dark})` }} aria-hidden="true" />
+    <Link href={`/cafes/${product.slug}`} className="group block bg-white-warm no-underline relative overflow-hidden">
 
-      {/* Image */}
+      {/* Accent top line — más fina y elegante */}
+      <div className="h-[2px] w-full" style={{ background: `linear-gradient(90deg, transparent, ${colors.base}, transparent)` }} aria-hidden="true" />
+
+      {/* Image container — más altura, más protagonismo */}
       <div
-        className="relative h-[320px] sm:h-[340px] md:h-[380px] overflow-hidden"
-        style={{ background: product.accent === "bourbon" ? "#E8D4A8" : product.accent === "colombia" ? "#0E0E0E" : "#1A0808" }}
+        className="relative overflow-hidden"
+        style={{
+          height: "clamp(280px, 36vw, 420px)",
+          background: product.accent === "bourbon"
+            ? "linear-gradient(160deg, #F0E4C0 0%, #E0C880 100%)"
+            : product.accent === "colombia"
+            ? "linear-gradient(160deg, #1A0A0A 0%, #0A0404 100%)"
+            : "linear-gradient(160deg, #2A0808 0%, #140404 100%)",
+        }}
       >
         <Image
-          src={product.image} alt={`${product.name} — Maximilien Coffee`}
-          fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-contain transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
-          style={{ filter: product.accent !== "bourbon" ? "brightness(0.86)" : undefined }}
+          src={product.image}
+          alt={`${product.name} — Maximilien Coffee`}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-contain transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+          style={{ filter: product.accent !== "bourbon" ? "brightness(0.9)" : undefined }}
         />
-        {/* SCA */}
+
+        {/* SCA badge — más elegante */}
         <div
-          className="absolute top-3 right-3 md:top-4 md:right-4 w-12 h-12 md:w-[52px] md:h-[52px] rounded-full flex flex-col items-center justify-center border-2 border-white-warm shadow"
-          style={{ background: colors.base }}
+          className="absolute top-4 right-4 w-[50px] h-[50px] rounded-full flex flex-col items-center justify-center"
+          style={{
+            background: colors.base,
+            boxShadow: `0 0 0 1px ${colors.dark}40, 0 4px 12px ${colors.base}40`
+          }}
           aria-label={`${product.sca} puntos SCA`}
         >
-          <span className="font-display text-sm md:text-base font-semibold leading-none" style={{ color: product.accent === "bourbon" ? "#0A0704" : "#FDFAF2" }}>
+          <span className="font-display text-[15px] font-semibold leading-none"
+            style={{ color: product.accent === "bourbon" ? "#0A0704" : "#FDFAF2" }}>
             {product.sca}
           </span>
-          <span className="text-[6px] font-semibold tracking-[0.1em]" style={{ color: product.accent === "bourbon" ? "rgba(10,7,4,.5)" : "rgba(255,255,255,.6)" }}>SCA</span>
+          <span className="text-[6px] font-bold tracking-[0.15em] mt-0.5"
+            style={{ color: product.accent === "bourbon" ? "rgba(10,7,4,.45)" : "rgba(255,255,255,.55)" }}>
+            SCA
+          </span>
         </div>
-        {/* Badge */}
-        <div className="absolute top-3 left-3 md:top-4 md:left-4 px-2.5 py-1 text-[9px] font-semibold tracking-[0.12em] uppercase"
-          style={{ background: product.accent === "bourbon" ? "#0A0704" : "rgba(10,7,4,0.75)", color: colors.pale }}>
+
+        {/* Badge — más refinado */}
+        <div
+          className="absolute top-4 left-4 px-3 py-1 text-[9px] font-bold tracking-[0.18em] uppercase"
+          style={{
+            background: product.accent === "bourbon" ? "rgba(10,7,4,0.85)" : "rgba(10,7,4,0.70)",
+            color: colors.pale,
+            backdropFilter: "blur(4px)",
+          }}>
           {product.badge}
         </div>
-        {/* Wishlist */}
-        <button
-          onClick={e => { e.preventDefault(); e.stopPropagation(); }}
-          aria-label={`Guardar ${product.name} en favoritos`}
-          className="absolute bottom-3 right-3 w-9 h-9 rounded-full bg-white-warm/85 flex items-center justify-center text-brown-light opacity-0 group-hover:opacity-100 md:opacity-0 transition-opacity"
-        >♡</button>
       </div>
 
-      {/* Info */}
-      <div className="p-5 md:p-6 pb-6 md:pb-8">
-        <p className="text-[9.5px] font-semibold tracking-[0.18em] uppercase mb-1.5" style={{ color: colors.base }}>
+      {/* Info — más aire y jerarquía */}
+      <div className="px-6 pt-6 pb-8">
+
+        {/* Kicker */}
+        <p className="text-[9px] font-bold tracking-[0.24em] uppercase mb-2" style={{ color: colors.base }}>
           {product.kicker}
         </p>
-        <h3 className="font-display text-xl md:text-2xl font-medium text-ink leading-tight mb-2">
+
+        {/* Nombre */}
+        <h3 className="font-display text-[22px] md:text-[26px] font-medium text-ink leading-[1.1] mb-1.5">
           {product.name}
         </h3>
-        <p className="font-display text-[12px] italic font-light text-brown-light mb-3 md:mb-4">
-          {product.variety} · {product.process}
+
+        {/* Variedad y proceso */}
+        <p className="font-display text-[12px] italic text-brown-light mb-5">
+          {product.variety} · Proceso {product.process}
         </p>
-        <div className="flex flex-wrap gap-1.5 mb-4 md:mb-5">
+
+        {/* Notas sensoriales — chips más premium */}
+        <div className="flex flex-wrap gap-1.5 mb-6">
           {product.notes.slice(0, 3).map(n => (
-            <span key={n} className="px-2.5 py-1 border border-cream-3 bg-cream text-[10.5px] text-brown">{n}</span>
+            <span key={n}
+              className="px-2.5 py-1 text-[10px] font-medium text-brown border transition-colors duration-300 group-hover:border-current"
+              style={{ borderColor: "#E4D4B0", background: "#FAF4E6" }}>
+              {n}
+            </span>
           ))}
+          {product.notes.length > 3 && (
+            <span className="px-2.5 py-1 text-[10px] font-medium text-brown-light border border-cream-3 bg-cream">
+              +{product.notes.length - 3}
+            </span>
+          )}
         </div>
-        <div className="flex items-center justify-between">
-          <div className="font-display text-2xl md:text-[24px] text-ink">
-            {formatCOP(cheapest.price)}{" "}
-            <span className="text-[10px] text-brown-light font-body">/ {cheapest.weight}</span>
+
+        {/* Precio y CTA */}
+        <div className="flex items-end justify-between pt-5 border-t border-cream-3">
+          <div>
+            <p className="text-[9px] tracking-[2px] uppercase text-brown-light mb-1">Desde</p>
+            <div className="font-display text-[26px] font-light text-ink leading-none">
+              {formatCOP(cheapest.price)}
+              <span className="text-[11px] text-brown-light font-body ml-1">/ {cheapest.weight}</span>
+            </div>
           </div>
           <button
             onClick={handleAdd}
             aria-label={`Añadir ${product.name} al carrito`}
-            className="w-10 h-10 border border-cream-3 text-xl text-brown-light flex items-center justify-center hover:text-ink transition-colors active:scale-90"
+            className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-bold tracking-[0.18em] uppercase transition-all duration-300 active:scale-95"
+            style={{ background: colors.base, color: product.accent === "bourbon" ? "#0A0704" : "#FDFAF2" }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = colors.base;
-              (e.currentTarget as HTMLButtonElement).style.borderColor = colors.base;
-              (e.currentTarget as HTMLButtonElement).style.color = product.accent === "bourbon" ? "#0A0704" : "#FDFAF2";
+              (e.currentTarget as HTMLButtonElement).style.background = colors.dark;
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.background = "";
-              (e.currentTarget as HTMLButtonElement).style.borderColor = "";
-              (e.currentTarget as HTMLButtonElement).style.color = "";
+              (e.currentTarget as HTMLButtonElement).style.background = colors.base;
             }}
-          >+</button>
+          >
+            <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M8 3v10M3 8h10"/>
+            </svg>
+            Añadir
+          </button>
         </div>
       </div>
+
+      {/* Bottom accent line on hover */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[2px] transition-transform duration-500 origin-left scale-x-0 group-hover:scale-x-100"
+        style={{ background: `linear-gradient(90deg, ${colors.base}, ${colors.dark})` }}
+        aria-hidden="true"
+      />
     </Link>
   );
 }
