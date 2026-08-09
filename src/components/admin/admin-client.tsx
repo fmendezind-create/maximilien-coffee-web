@@ -329,85 +329,134 @@ export function AdminClient() {
             <h2 className="font-display text-2xl font-light text-ink">Dashboard</h2>
 
             {/* KPIs Comerciales */}
-            <div>
-              <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-3 font-semibold">Comercial</p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {[
-                  { label: "Ingresos totales", value: formatCOP(stats?.total_revenue || 0), sub: "pedidos pagados" },
-                  { label: "Total pedidos", value: stats?.total_orders || 0, sub: "todos los estados" },
-                  { label: "Pedidos pagados", value: stats?.paid_orders || 0, sub: "confirmados" },
-                  { label: "Pendientes", value: stats?.pending_orders || 0, sub: "por confirmar" },
-                ].map(kpi => (
-                  <div key={kpi.label} className="bg-white-warm border border-cream-3 p-5">
-                    <p className="text-[10px] tracking-[1px] uppercase text-brown-light mb-1">{kpi.label}</p>
-                    <p className="font-display text-2xl font-light text-ink">{kpi.value}</p>
-                    <p className="text-[11px] text-brown-light mt-1">{kpi.sub}</p>
-                  </div>
-                ))}
-              </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { label: "Ingresos totales", value: formatCOP(stats?.total_revenue || 0), sub: "pedidos pagados", color: "#C8A84A" },
+                { label: "Total pedidos", value: stats?.total_orders || 0, sub: "todos los estados", color: "#0A0704" },
+                { label: "Pagados", value: stats?.paid_orders || 0, sub: "confirmados", color: "#22c55e" },
+                { label: "Pendientes", value: stats?.pending_orders || 0, sub: "por confirmar", color: "#f59e0b" },
+              ].map(kpi => (
+                <div key={kpi.label} className="bg-white-warm border border-cream-3 p-5">
+                  <p className="text-[10px] tracking-[1px] uppercase text-brown-light mb-2">{kpi.label}</p>
+                  <p className="font-display text-2xl font-light" style={{ color: kpi.color }}>{kpi.value}</p>
+                  <p className="text-[11px] text-brown-light mt-1">{kpi.sub}</p>
+                </div>
+              ))}
             </div>
 
             {/* KPIs Suscripciones */}
             {subStats && (
-              <div>
-                <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-3 font-semibold">Suscripciones</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[
-                    { label: "Activas", value: subStats.active_count || 0, sub: "suscriptores activos" },
-                    { label: "MRR", value: formatCOP(subStats.mrr || 0), sub: "ingresos recurrentes/mes" },
-                    { label: "ARR", value: formatCOP(subStats.arr || 0), sub: "proyección anual" },
-                    { label: "Retención", value: `${subStats.retention_rate || 100}%`, sub: `Churn: ${subStats.churn_rate || 0}%` },
-                  ].map(kpi => (
-                    <div key={kpi.label} className="bg-white-warm border border-cream-3 p-5">
-                      <p className="text-[10px] tracking-[1px] uppercase text-brown-light mb-1">{kpi.label}</p>
-                      <p className="font-display text-2xl font-light text-ink">{kpi.value}</p>
-                      <p className="text-[11px] text-brown-light mt-1">{kpi.sub}</p>
-                    </div>
-                  ))}
-                </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: "Suscripciones activas", value: subStats.active_count || 0, sub: "clientes recurrentes", color: "#22c55e" },
+                  { label: "MRR", value: formatCOP(subStats.mrr || 0), sub: "ingresos recurrentes/mes", color: "#C8A84A" },
+                  { label: "ARR", value: formatCOP(subStats.arr || 0), sub: "proyección anual", color: "#6366f1" },
+                  { label: "Retención", value: `${subStats.retention_rate || 100}%`, sub: `Churn: ${subStats.churn_rate || 0}%`, color: "#0ea5e9" },
+                ].map(kpi => (
+                  <div key={kpi.label} className="bg-white-warm border border-cream-3 p-5">
+                    <p className="text-[10px] tracking-[1px] uppercase text-brown-light mb-2">{kpi.label}</p>
+                    <p className="font-display text-2xl font-light" style={{ color: kpi.color }}>{kpi.value}</p>
+                    <p className="text-[11px] text-brown-light mt-1">{kpi.sub}</p>
+                  </div>
+                ))}
               </div>
             )}
 
-            {/* Ventas por plan */}
-            {subStats?.by_plan?.length > 0 && (
-              <div className="bg-white-warm border border-cream-3 p-6">
-                <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-4 font-semibold">Suscripciones por plan</p>
-                <div className="space-y-3">
-                  {subStats.by_plan.map((p: any) => (
-                    <div key={p.plan_name} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-gold" />
-                        <span className="text-sm text-ink">{p.plan_name || "Sin plan"}</span>
-                      </div>
-                      <div className="flex items-center gap-6">
-                        <span className="text-sm text-brown-light">{p.count} suscriptores</span>
-                        <span className="text-sm font-semibold text-ink">{formatCOP(p.revenue)}/mes</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Ventas diarias */}
+            {/* Gráfico ingresos diarios */}
             {stats?.daily_revenue?.length > 0 && (
               <div className="bg-white-warm border border-cream-3 p-6">
-                <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-4 font-semibold">Ingresos últimos 30 días</p>
-                <div className="space-y-2">
-                  {stats.daily_revenue.slice(-10).map((d: any) => (
-                    <div key={d.date} className="flex items-center gap-3">
-                      <span className="text-[11px] text-brown-light w-24">{formatDate(d.date)}</span>
-                      <div className="flex-1 bg-cream rounded-full h-1.5">
-                        <div className="bg-gold h-1.5 rounded-full"
-                          style={{ width: `${Math.min(100, (d.revenue / (stats.total_revenue || 1)) * 500)}%` }} />
-                      </div>
-                      <span className="text-[11px] font-semibold text-ink w-24 text-right">{formatCOP(d.revenue)}</span>
-                      <span className="text-[10px] text-brown-light w-16 text-right">{d.orders} pedidos</span>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-6 font-semibold">Ingresos últimos 30 días</p>
+                <ResponsiveContainer width="100%" height={200}>
+                  <AreaChart data={stats.daily_revenue} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#C8A84A" stopOpacity={0.15}/>
+                        <stop offset="95%" stopColor="#C8A84A" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: "#9B6535" }}
+                      tickFormatter={d => new Date(d).toLocaleDateString("es-CO", { day: "2-digit", month: "short" })}
+                      axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: "#9B6535" }}
+                      tickFormatter={v => "$" + (v/1000).toFixed(0) + "K"}
+                      axisLine={false} tickLine={false} width={45} />
+                    <Tooltip
+                      formatter={(v: any) => [formatCOP(v), "Ingresos"]}
+                      labelFormatter={l => new Date(l).toLocaleDateString("es-CO", { day: "2-digit", month: "long" })}
+                      contentStyle={{ fontSize: 11, border: "1px solid #E4D4B0", borderRadius: 0, background: "#FAF4E6" }}
+                    />
+                    <Area type="monotone" dataKey="revenue" stroke="#C8A84A" strokeWidth={2}
+                      fill="url(#goldGrad)" dot={false} activeDot={{ r: 4, fill: "#C8A84A" }} />
+                  </AreaChart>
+                </ResponsiveContainer>
               </div>
             )}
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Gráfico pedidos por estado */}
+              {orders.length > 0 && (() => {
+                const statusCount = orders.reduce((acc: any, o: any) => {
+                  const label = STATUS_LABELS[o.status]?.label || o.status;
+                  acc[label] = (acc[label] || 0) + 1;
+                  return acc;
+                }, {});
+                const data = Object.entries(statusCount).map(([name, value]) => ({ name, value }));
+                const COLORS = ["#C8A84A", "#22c55e", "#06b6d4", "#f59e0b", "#ef4444", "#6366f1", "#8b5cf6"];
+                return (
+                  <div className="bg-white-warm border border-cream-3 p-6">
+                    <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-6 font-semibold">Pedidos por estado</p>
+                    <div className="flex items-center gap-6">
+                      <ResponsiveContainer width={140} height={140}>
+                        <PieChart>
+                          <Pie data={data} cx="50%" cy="50%" innerRadius={40} outerRadius={65}
+                            dataKey="value" strokeWidth={0}>
+                            {data.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
+                      <div className="flex-1 space-y-2">
+                        {data.map((d, i) => (
+                          <div key={d.name} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
+                              <span className="text-[11px] text-brown">{d.name}</span>
+                            </div>
+                            <span className="text-[11px] font-semibold text-ink">{d.value as number}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Gráfico suscripciones por plan */}
+              {subStats?.by_plan?.length > 0 && (
+                <div className="bg-white-warm border border-cream-3 p-6">
+                  <p className="text-[10px] tracking-[2px] uppercase text-brown-light mb-6 font-semibold">Suscripciones por plan</p>
+                  <ResponsiveContainer width="100%" height={140}>
+                    <BarChart data={subStats.by_plan} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                      <XAxis dataKey="plan_name" tick={{ fontSize: 10, fill: "#9B6535" }} axisLine={false} tickLine={false} />
+                      <YAxis tick={{ fontSize: 10, fill: "#9B6535" }} axisLine={false} tickLine={false} width={30} />
+                      <Tooltip
+                        formatter={(v: any) => [v, "Suscriptores"]}
+                        contentStyle={{ fontSize: 11, border: "1px solid #E4D4B0", borderRadius: 0, background: "#FAF4E6" }}
+                      />
+                      <Bar dataKey="count" fill="#C8A84A" radius={[2, 2, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <div className="mt-4 pt-4 border-t border-cream-3 flex justify-between">
+                    {subStats.by_plan.map((p: any) => (
+                      <div key={p.plan_name} className="text-center">
+                        <p className="text-[10px] text-brown-light">{p.plan_name || "Sin plan"}</p>
+                        <p className="text-[12px] font-semibold text-ink mt-0.5">{formatCOP(p.revenue)}/mes</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
         )}
 
