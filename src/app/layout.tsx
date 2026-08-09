@@ -84,8 +84,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           });
           gtag('js', new Date());
         `}} />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-        <script dangerouslySetInnerHTML={{ __html: `gtag('config', 'G-XXXXXXXXXX');` }} />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-QFQ02WB1ZN"></script>
+        <script dangerouslySetInnerHTML={{ __html: `gtag('config', 'G-QFQ02WB1ZN');` }} />
       </head>
       <body className="antialiased">
         <CartProvider>
