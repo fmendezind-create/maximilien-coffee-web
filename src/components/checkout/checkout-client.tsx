@@ -44,8 +44,6 @@ const COLOMBIA: Record<string, string[]> = {
   "Vichada": ["Puerto Carreño","La Primavera","Cumaribo"],
 };
 
-const COUPONS: Record<string, number> = { BIENVENIDO: 10, ALMA10: 10, HUILA15: 15 };
-
 export function CheckoutClient() {
   const { items, subtotal } = useCart();
   const [coupon, setCoupon] = useState("");
@@ -63,13 +61,26 @@ export function CheckoutClient() {
   const shipping = (subtotal - discount) >= FREE_SHIPPING_THRESHOLD ? 0 : 5900;
   const total = subtotal - discount + shipping;
 
-  function applyCoupon() {
+  async function applyCoupon() {
     const code = coupon.trim().toUpperCase();
-    if (COUPONS[code]) {
-      setDiscountPct(COUPONS[code]);
-      setCouponMsg({ type: "ok", text: `✓ Cupón aplicado — ${COUPONS[code]}% de descuento` });
-    } else {
-      setCouponMsg({ type: "err", text: "Código no válido." });
+    if (!code) return;
+
+    try {
+      const res = await fetch("/api/validate-coupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+
+      if (data.valid) {
+        setDiscountPct(data.discount);
+        setCouponMsg({ type: "ok", text: `✓ Cupón aplicado — ${data.discount}% de descuento` });
+      } else {
+        setCouponMsg({ type: "err", text: "Código no válido." });
+      }
+    } catch {
+      setCouponMsg({ type: "err", text: "Error validando el cupón. Intenta de nuevo." });
     }
   }
 
