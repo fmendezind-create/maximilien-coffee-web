@@ -85,7 +85,7 @@ export function HeroSlider() {
             alt={`Maximilien Coffee — ${s.titleEm}`}
             fill
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-center scale-[1.02]"
             priority={i === 0}
           />
           {/* Overlay gradiente */}
@@ -94,10 +94,10 @@ export function HeroSlider() {
             style={{
               background: `linear-gradient(
                 105deg,
-                rgba(10,7,4,0.88) 0%,
-                rgba(10,7,4,0.60) 40%,
-                rgba(10,7,4,0.20) 75%,
-                rgba(10,7,4,0.10) 100%
+                rgba(10,7,4,0.90) 0%,
+                rgba(10,7,4,0.65) 40%,
+                rgba(10,7,4,0.25) 75%,
+                rgba(10,7,4,0.15) 100%
               )`
             }}
           />

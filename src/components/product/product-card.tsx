@@ -43,7 +43,7 @@ export function ProductCard({ product }: { product: Product }) {
           alt={`${product.name} — Maximilien Coffee`}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-contain transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+          className="object-cover object-center transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
           style={{ filter: product.accent !== "bourbon" ? "brightness(0.9)" : undefined }}
         />
 
