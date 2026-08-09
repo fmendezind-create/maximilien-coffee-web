@@ -44,8 +44,8 @@ function InventoryTab({ authKey }: { authKey: string }) {
   });
 
   const GRIND_LABELS: Record<string, string> = {
-    "En grano": "Grano", "Filtro": "Filtro", "Espresso": "Espresso",
-    "Prensa francesa": "Prensa", "Moka": "Moka",
+    "En grano": "En grano",
+    "Molido": "Molido",
   };
 
   if (loading) return (
