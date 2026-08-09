@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   const adminKey = req.nextUrl.searchParams.get("key");
-  if (adminKey !== "mc-admin-2025") {
+  if (adminKey !== (process.env.ADMIN_KEY || "mc-admin-2025")) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 

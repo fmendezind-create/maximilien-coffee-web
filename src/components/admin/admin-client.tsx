@@ -33,22 +33,20 @@ export function AdminClient() {
   const [error, setError]     = useState("");
 
   const api = useCallback(async (path: string, opts?: RequestInit) => {
-    // Usar proxy de Vercel para evitar CORS
     const proxyPath = path.replace("/admin/", "");
     const method = opts?.method || "GET";
-    
-    let url = `/api/admin?path=${proxyPath}&key=${key}`;
-    
+    const url = `/api/admin?path=${proxyPath}`;
+
     const fetchOpts: RequestInit = {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${key}`,
+      },
     };
-    
-    if (opts?.body) {
-      fetchOpts.body = opts.body;
-      url = `/api/admin?path=${proxyPath}&key=${key}`;
-    }
-    
+
+    if (opts?.body) fetchOpts.body = opts.body;
+
     const res = await fetch(url, fetchOpts);
     if (!res.ok) throw new Error(await res.text());
     return res.json();

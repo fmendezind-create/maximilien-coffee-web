@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { useCart } from "@/lib/cart-context";
 import { formatCOP } from "@/lib/products";
+import { FREE_SHIPPING_THRESHOLD } from "@/lib/cart-context";
 
 // ── DEPARTAMENTOS Y CIUDADES PRINCIPALES ─────────────────────────
 const COLOMBIA: Record<string, string[]> = {
@@ -59,7 +60,7 @@ export function CheckoutClient() {
   const cities = form.dept ? (COLOMBIA[form.dept] || []) : [];
 
   const discount = Math.round(subtotal * discountPct / 100);
-  const shipping = (subtotal - discount) >= 60000 ? 0 : 5900;
+  const shipping = (subtotal - discount) >= FREE_SHIPPING_THRESHOLD ? 0 : 5900;
   const total = subtotal - discount + shipping;
 
   function applyCoupon() {

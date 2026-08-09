@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s | Maximilien Coffee",
   },
   description:
-    "Café colombiano de especialidad con origen único en Santa María, Huila. Bourbon Rosado 92 pts SCA, Variedad Colombia 89 pts, Blend 85 pts. Tostado esta semana. Envío a toda Colombia.",
+    "Café colombiano de especialidad con origen único en Santa María, Huila. Bourbon Rosado 92 pts SCA, Variedad Colombia 87 pts, Blend 82 pts. Tostado fresco. Envío a toda Colombia.",
   keywords: [
     "café de especialidad Colombia",
     "café especialidad Huila",
@@ -84,8 +84,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           });
           gtag('js', new Date());
         `}} />
-  {/* Google reCAPTCHA v3 — reemplazar con tu site key real */}
-        <script async src="https://www.google.com/recaptcha/api.js?render=6LcXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"></script>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
         <script dangerouslySetInnerHTML={{ __html: `gtag('config', 'G-XXXXXXXXXX');` }} />
       </head>

@@ -43,7 +43,7 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-const FREE_SHIPPING_THRESHOLD = 80000;
+const FREE_SHIPPING_THRESHOLD = 60000; // Umbral envío gratis — actualizar aquí para cambiar en toda la app
 export { FREE_SHIPPING_THRESHOLD };
 
 export function CartProvider({ children }: { children: ReactNode }) {
