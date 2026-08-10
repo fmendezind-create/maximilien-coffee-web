@@ -3,6 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const { email, name, reference, amount, items } = await req.json();
+    
+    // Validar que el email existe y es un string
+    if (!email || typeof email !== "string" || !email.includes("@")) {
+      return NextResponse.json({ error: "Email inválido" }, { status: 400 });
+    }
     const resendKey = process.env.RESEND_API_KEY;
     if (!resendKey) return NextResponse.json({ error: "Sin API key" }, { status: 500 });
 
@@ -96,7 +101,7 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
       body: JSON.stringify({
         from: "Maximilien Coffee <noreply@mail.maximiliencoffee.com>",
-        to: [email],
+        to: [String(email)],  // Asegurar que sea string
         subject: `✓ Pedido confirmado #${reference} — Maximilien Coffee`,
         html,
       }),

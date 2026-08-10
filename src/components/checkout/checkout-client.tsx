@@ -118,7 +118,7 @@ export function CheckoutClient() {
 
     // 1. Registrar pedido en el backend
     try {
-      await fetch(`https://web-production-aa93f.up.railway.app/orders`, {
+      await fetch(`/api/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
