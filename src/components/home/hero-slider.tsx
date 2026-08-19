@@ -17,10 +17,10 @@ const SLIDES = [
   },
   {
     image: "/images/colombia-main.jpg",
-    eyebrow: "Variedad Colombia · Proceso Honey",
+    eyebrow: "Variedad Colombia · Proceso Natural",
     title: "Sofisticado,",
     titleEm: "complejo",
-    subtitle: "89 puntos SCA · Bolsa negra",
+    subtitle: "87 puntos SCA · Bolsa negra",
     cta: { label: "Comprar ahora", href: "/cafes/variedad-colombia" },
     ctaSecondary: { label: "Ver toda la colección", href: "/cafes" },
     accent: "#8B1A1A",
@@ -30,7 +30,7 @@ const SLIDES = [
     eyebrow: "Blend · Proceso Lavado",
     title: "El favorito",
     titleEm: "de siempre",
-    subtitle: "85 puntos SCA · Bolsa roja",
+    subtitle: "82 puntos SCA · Bolsa roja",
     cta: { label: "Comprar ahora", href: "/cafes/blend" },
     ctaSecondary: { label: "Ver toda la colección", href: "/cafes" },
     accent: "#9B2020",
@@ -127,7 +127,7 @@ export function HeroSlider() {
 
         <p
           key={`sub-${active}`}
-          className="font-display italic text-cream/45 tracking-[0.1em] mb-10 animate-fade-in"
+          className="font-display italic text-cream/65 tracking-[0.1em] mb-10 animate-fade-in drop-shadow-sm"
           style={{ fontSize: "clamp(14px, 2vw, 20px)" }}
         >
           {slide.subtitle}
@@ -143,7 +143,7 @@ export function HeroSlider() {
           </Link>
           <Link
             href={slide.ctaSecondary.href}
-            className="font-display italic text-cream/50 no-underline flex items-center gap-2 hover:gap-4 hover:text-cream/80 transition-all"
+            className="font-display italic text-cream/70 no-underline flex items-center gap-2 hover:gap-4 hover:text-cream transition-all drop-shadow-sm"
             style={{ fontSize: "clamp(13px,1.5vw,16px)" }}
           >
             {slide.ctaSecondary.label} <span aria-hidden="true">→</span>
