@@ -12,10 +12,30 @@ const STATS = [
 ];
 
 const TERROIR = [
-  { icon: "🌡️", title: "Clima bifásico", body: "Dos épocas lluviosas al año crean condiciones únicas de maduración lenta. Las noches frías — entre 14 y 18°C — concentran los azúcares en el grano y construyen la complejidad aromática." },
-  { icon: "⛰️", title: "Suelos volcánicos", body: "El Macizo Colombiano aporta suelos ricos en materia orgánica y minerales volcánicos. Esta composición única es la que da al Bourbon Rosado sus notas florales imposibles de replicar en otras regiones." },
-  { icon: "🌊", title: "Cañón del Magdalena", body: "La influencia del río Magdalena regula la humedad y crea corrientes de aire que protegen las plantas durante las épocas críticas de floración. El resultado es una cosecha más consistente y concentrada." },
-  { icon: "☀️", title: "Brillo solar óptimo", body: "Santa María recibe entre 1.800 y 2.000 horas de luz solar al año — exactamente lo que el café de especialidad necesita para desarrollar sus mejores atributos sin estrés hídrico." },
+  {
+    num: "I",
+    icon: <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 4v4M16 24v4M4 16h4M24 16h4M7.5 7.5l2.8 2.8M21.7 21.7l2.8 2.8M7.5 24.5l2.8-2.8M21.7 10.3l2.8-2.8"/><circle cx="16" cy="16" r="5"/></svg>,
+    title: "Brillo solar óptimo",
+    body: "Santa María recibe entre 1.800 y 2.000 horas de luz solar al año — exactamente lo que el café de especialidad necesita para desarrollar sus mejores atributos sin estrés hídrico."
+  },
+  {
+    num: "II",
+    icon: <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 28l7-14 5 8 4-6 8 12"/><path d="M4 20c4-8 8-4 12-10s8-6 12 0"/></svg>,
+    title: "Suelos volcánicos",
+    body: "El Macizo Colombiano aporta suelos ricos en materia orgánica y minerales volcánicos. Esta composición única es la que da al Bourbon Rosado sus notas florales imposibles de replicar en otras regiones."
+  },
+  {
+    num: "III",
+    icon: <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20c2-4 4-6 6-4s4-2 6-2 4 2 6 0 4-4 6-2"/><path d="M4 24c2-4 4-6 6-4s4-2 6-2 4 2 6 0 4-4 6-2"/></svg>,
+    title: "Cañón del Magdalena",
+    body: "La influencia del río Magdalena regula la humedad y crea corrientes de aire que protegen las plantas durante las épocas críticas de floración. El resultado es una cosecha más consistente y concentrada."
+  },
+  {
+    num: "IV",
+    icon: <svg viewBox="0 0 32 32" fill="none" className="w-6 h-6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 6c0 4-4 7-4 11a4 4 0 008 0c0-4-4-7-4-11z"/><path d="M10 14c-2 1-4 3-4 6M22 14c2 1 4 3 4 6"/></svg>,
+    title: "Clima bifásico",
+    body: "Dos épocas lluviosas al año crean condiciones únicas de maduración lenta. Las noches frías — entre 14 y 18°C — concentran los azúcares en el grano y construyen la complejidad aromática."
+  },
 ];
 
 const PROCESO = [
