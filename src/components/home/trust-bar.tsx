@@ -36,8 +36,8 @@ export function TrustBar() {
               <path d="M11 16l3 3 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           }
-          text="Garantía total"
-          sub="Reembolso sin preguntas"
+          text="Pedido asegurado"
+          sub="Cobertura ante daño o pérdida"
         />
 
         <TrustItem
