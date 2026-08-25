@@ -96,20 +96,12 @@ export function ProductCard({ product }: { product: Product }) {
           {product.variety} · Proceso {product.process}
         </p>
 
-        {/* Notas sensoriales — chips más premium */}
-        <div className="flex flex-wrap gap-1.5 mb-6">
-          {product.notes.slice(0, 3).map(n => (
-            <span key={n}
-              className="px-2.5 py-1 text-[10px] font-medium text-brown border transition-colors duration-300 group-hover:border-current"
-              style={{ borderColor: "#E4D4B0", background: "#FAF4E6" }}>
-              {n}
-            </span>
-          ))}
-          {product.notes.length > 3 && (
-            <span className="px-2.5 py-1 text-[10px] font-medium text-brown-light border border-cream-3 bg-cream">
-              +{product.notes.length - 3}
-            </span>
-          )}
+        {/* Perfil sensorial — descripción editorial */}
+        <div className="mb-6">
+          <p className="text-[9px] font-semibold tracking-[0.2em] uppercase text-brown-light mb-1.5">Perfil de taza</p>
+          <p className="text-[12px] font-light text-brown leading-[1.7] italic">
+            {product.notes.join(", ")}.
+          </p>
         </div>
 
         {/* Precio y CTA */}
