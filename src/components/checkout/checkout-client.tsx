@@ -297,7 +297,7 @@ export function CheckoutClient() {
               <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5 text-ink/60 shrink-0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 12h18M4 12l3-6h14l3 6"/><path d="M4 12v10a2 2 0 002 2h20a2 2 0 002-2V12"/><circle cx="10" cy="26" r="2"/><circle cx="22" cy="26" r="2"/>
               </svg>
-              <span className="text-[11px] text-brown font-medium">Envío gratis +$60.000</span>
+              <span className="text-[11px] text-brown font-medium">Envío gratis +$100.000</span>
             </div>
             <div className="flex items-center gap-2">
               <svg viewBox="0 0 32 32" fill="none" className="w-5 h-5 text-ink/60 shrink-0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
