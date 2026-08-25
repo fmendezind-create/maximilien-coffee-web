@@ -10,7 +10,7 @@ export interface QuizAnswer {
 
 export interface Message {
   role: "user" | "assistant";
-  content: string;
+  content: string; 
 }
 
 export const PRODUCTS = {
