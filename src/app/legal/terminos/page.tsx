@@ -28,7 +28,7 @@ export default function TerminosPage() {
           </section>
           <section>
             <h2 className="font-display text-xl font-medium text-ink mb-3">4. Envíos</h2>
-            <p>Despachamos a todo Colombia. Bogotá: 1-2 días hábiles. Resto del país: 3-5 días hábiles. Envío gratis en pedidos superiores a $60.000 COP.</p>
+            <p>Despachamos a todo Colombia. Bogotá: 1-2 días hábiles. Resto del país: 3-5 días hábiles. Envío gratis en pedidos superiores a $100.000 COP.</p>
           </section>
           <section>
             <h2 className="font-display text-xl font-medium text-ink mb-3">5. Devoluciones</h2>
