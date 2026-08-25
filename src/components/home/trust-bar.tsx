@@ -26,7 +26,7 @@ export function TrustBar() {
             </svg>
           }
           text="Envío gratis"
-          sub="En pedidos +$60.000"
+          sub="En pedidos +$100.000"
         />
 
         <TrustItem
