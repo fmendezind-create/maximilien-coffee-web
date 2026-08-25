@@ -89,11 +89,9 @@ export function ProductDetail({ product }: { product: Product }) {
         <Hr />
 
         <p className="text-[10px] font-medium tracking-[0.24em] uppercase mb-3" style={{ color: colors.base }}>Perfil de taza</p>
-        <div className="flex flex-wrap gap-2 mb-6" role="list">
-          {product.notes.map(n => (
-            <span key={n} className="px-3.5 py-1.5 border border-cream-3 bg-cream text-[11.5px] text-brown" role="listitem">{n}</span>
-          ))}
-        </div>
+        <p className="text-[13px] font-light text-brown leading-[1.8] italic mb-6">
+          {product.notes.join(", ")}.
+        </p>
 
         <div className="grid grid-cols-2 gap-3 mb-6">
           <Spec label="Variedad"   value={product.variety} />
