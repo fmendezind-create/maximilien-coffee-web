@@ -11,11 +11,11 @@ import {
 
 export function BaristaClient() {
   const [quizStep, setQuizStep] = useState(0);
-  const [answers, setAnswers]   = useState<Partial<QuizAnswer>>({});
+  const [answers, setAnswers] = useState<Partial<QuizAnswer>>({});
   const [recommended, setRecommended] = useState<ProductSlug | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput]       = useState("");
-  const [loading, setLoading]   = useState(false);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function BaristaClient() {
       const product = PRODUCTS[rec];
       setMessages([{
         role: "assistant",
-        content: `Basándome en tus respuestas, te recomiendo el ${product.name} (${product.sca} pts SCA). Con notas de ${product.notes.join(", ")}, es exactamente lo que encaja con lo que describes. ¿Tienes alguna pregunta sobre este café o quieres explorar otras opciones?`,
+        content: "Basandome en tus respuestas, te recomiendo el " + product.name + " (" + product.sca + " pts SCA). Con notas de " + product.notes.join(", ") + ", es exactamente lo que encaja con lo que describes. Tienes alguna pregunta sobre este cafe o quieres explorar otras opciones?",
       }]);
     }
   }
@@ -55,14 +55,12 @@ export function BaristaClient() {
         }),
       });
       const data = await res.json();
-      setMessages(prev => [...prev, {
-        role: "assistant",
-        content: data.content || "No pude procesar tu mensaje. Intenta de nuevo."
-      }]);
+      const reply = data.text || data.content || "No pude procesar tu mensaje. Intenta de nuevo.";
+      setMessages(prev => [...prev, { role: "assistant", content: reply }]);
     } catch {
       setMessages(prev => [...prev, {
         role: "assistant",
-        content: "Hubo un error técnico. Intenta de nuevo."
+        content: "Hubo un error tecnico. Intenta de nuevo.",
       }]);
     } finally {
       setLoading(false);
@@ -79,10 +77,10 @@ export function BaristaClient() {
         <div className="text-center mb-12">
           <p className="text-[10px] font-semibold tracking-[0.28em] uppercase text-gold mb-3">Barista IA</p>
           <h1 className="font-display text-[clamp(28px,5vw,44px)] font-light text-ink mb-3">
-            Tu asesor de café personal
+            Tu asesor de cafe personal
           </h1>
           <p className="text-[14px] font-light text-brown-light">
-            Responde tres preguntas y te recomiendo el café ideal para ti.
+            Responde tres preguntas y te recomiendo el cafe ideal para ti.
           </p>
         </div>
 
@@ -116,7 +114,7 @@ export function BaristaClient() {
         {recommended && product && (
           <div className="space-y-6">
             <div className="bg-white-warm border border-cream-3 overflow-hidden">
-              <div className="h-[2px]" style={{ background: `linear-gradient(90deg, transparent, ${product.accent}, transparent)` }} />
+              <div className="h-[2px]" style={{ background: "linear-gradient(90deg, transparent, " + product.accent + ", transparent)" }} />
               <div className="flex items-center gap-5 p-6">
                 <div className="relative w-20 h-20 shrink-0 overflow-hidden rounded-sm"
                   style={{ background: product.accent === "#C8A84A" ? "#F0E4C0" : "#1A0808" }}>
@@ -130,13 +128,13 @@ export function BaristaClient() {
                   <p className="text-[11px] text-brown-light mt-0.5">{product.subtitle}</p>
                   <div className="flex items-center gap-3 mt-2">
                     <span className="text-[11px] font-semibold" style={{ color: product.accent }}>{product.sca} pts SCA</span>
-                    <span className="text-brown-light text-[10px]">·</span>
+                    <span className="text-brown-light text-[10px]">-</span>
                     <span className="text-[12px] font-semibold text-ink">Desde {product.price}</span>
                   </div>
                 </div>
               </div>
               <div className="px-6 pb-5 border-t border-cream-3 pt-4 flex gap-3">
-                <Link href={`/cafes/${product.slug}`}
+                <Link href={"/cafes/" + product.slug}
                   className="flex-1 text-center py-2.5 bg-ink text-cream text-[11px] font-semibold tracking-[0.16em] uppercase no-underline hover:bg-ink/90 transition-colors">
                   Ver producto
                 </Link>
@@ -149,15 +147,13 @@ export function BaristaClient() {
 
             <div className="bg-white-warm border border-cream-3">
               <div className="px-6 py-4 border-b border-cream-3">
-                <p className="text-[11px] font-semibold text-ink">Pregúntame lo que quieras</p>
-                <p className="text-[10px] text-brown-light mt-0.5">Sobre preparación, envíos, otras variedades</p>
+                <p className="text-[11px] font-semibold text-ink">Preguntame lo que quieras</p>
+                <p className="text-[10px] text-brown-light mt-0.5">Sobre preparacion, envios, otras variedades</p>
               </div>
               <div className="h-[280px] overflow-y-auto px-6 py-4 space-y-4">
                 {messages.map((msg, i) => (
-                  <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div className={`max-w-[85%] px-4 py-3 text-[13px] leading-[1.65] ${
-                      msg.role === "user" ? "bg-ink text-cream" : "bg-cream border border-cream-3 text-brown"
-                    }`}>
+                  <div key={i} className={"flex " + (msg.role === "user" ? "justify-end" : "justify-start")}>
+                    <div className={"max-w-[85%] px-4 py-3 text-[13px] leading-[1.65] " + (msg.role === "user" ? "bg-ink text-cream" : "bg-cream border border-cream-3 text-brown")}>
                       {msg.content}
                     </div>
                   </div>
@@ -165,9 +161,9 @@ export function BaristaClient() {
                 {loading && (
                   <div className="flex justify-start">
                     <div className="bg-cream border border-cream-3 px-4 py-3 flex gap-1">
-                      {[0,1,2].map(i => (
+                      {[0, 1, 2].map(i => (
                         <div key={i} className="w-1.5 h-1.5 rounded-full bg-brown-light animate-bounce"
-                          style={{ animationDelay: `${i * 0.15}s` }} />
+                          style={{ animationDelay: i * 0.15 + "s" }} />
                       ))}
                     </div>
                   </div>
@@ -194,3 +190,4 @@ export function BaristaClient() {
     </div>
   );
 }
+
