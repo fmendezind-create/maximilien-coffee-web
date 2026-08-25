@@ -49,4 +49,4 @@ export const PRODUCTS = {
 export const QUIZ_STEPS = [
   {
     key: "intensity",
-    question: "¿Qué tan intenso te gusta el
+    question: "¿Qué tan intenso te gusta el café?",
