@@ -29,7 +29,7 @@ export function Footer() {
               <Image src="/images/logo.jpg" alt="Maximilien Coffee" width={40} height={40} className="w-10 h-10 rounded-full object-cover" />
               <div>
                 <div className="font-display text-[11px] font-semibold tracking-[0.2em] text-cream">MAXIMILIEN COFFEE</div>
-                <div className="font-display text-[9px] italic tracking-[0.18em] text-gold mt-0.5">Alma de Café</div>
+                <div className="font-display text-[13px] italic tracking-[0.18em] text-gold mt-0.5">Alma de Café</div>
               </div>
             </div>
             <p className="text-[12px] font-light leading-[1.8] text-cream/45 mb-6">
