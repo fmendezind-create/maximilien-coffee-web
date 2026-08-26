@@ -42,7 +42,7 @@ const PROCESO = [
   { num: "01", title: "Cosecha selectiva", body: "Solo cerezas en su punto óptimo de madurez. Un proceso manual que puede tomar 3 veces más tiempo que la cosecha mecanizada — pero es lo que diferencia 92 puntos de 80." },
   { num: "02", title: "Procesamiento en finca", body: "Cada lote se procesa con el método definido para esa variedad: natural para el Bourbon Rosado, honey para la Variedad Colombia, lavado para el Blend. El proceso comienza máximo 6 horas después de la cosecha." },
   { num: "03", title: "Secado controlado", body: "Camas africanas elevadas permiten una circulación de aire uniforme. El secado toma entre 25 y 40 días dependiendo del proceso. Volteo manual cada 2 horas durante el día para una fermentación homogénea." },
-  { num: "04", title: "Tostión en Bogotá", body: "Lotes de máximo 5 kg. Perfil de tueste diseñado específicamente para cada variedad para resaltar sus notas características. Despachamos dentro de los 7 días post tostión para garantizar frescura máxima." },
+  { num: "04", title: "Tostión en Bogotá", body: "Lotes de máximo 5 kg. Perfil de tueste diseñado específicamente para cada variedad para resaltar sus notas características. Aseguramos la mejor tostión para cada variedad." },
 ];
 
 export function OrigenClient() {
@@ -238,7 +238,7 @@ export function OrigenClient() {
             Prueba el café<br /><em className="italic text-brown">que lo hace posible</em>
           </h2>
           <p className="text-[14px] font-light text-brown-light leading-[1.85] mb-8">
-            Tostado esta semana en Bogotá. En tu puerta en 2–5 días hábiles.
+            Tostado con precisión. Entregado con rapidez.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
