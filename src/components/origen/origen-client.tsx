@@ -109,7 +109,7 @@ export function OrigenClient() {
           <div className="relative">
             <div className="aspect-[4/3] overflow-hidden rounded-sm">
               <Image
-                src="/images/colombia-1.jpg"
+                src="/images/Coffee_Farmer.jpg"
                 alt="Cafetal en Santa María, Huila"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
