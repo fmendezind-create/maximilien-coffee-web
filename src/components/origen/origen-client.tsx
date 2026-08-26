@@ -58,7 +58,7 @@ export function OrigenClient() {
     <>
       {/* ── HERO ── */}
       <section className="relative h-[70vh] min-h-[520px] overflow-hidden flex items-end" aria-labelledby="origen-hero">
-        <div className="absolute inset-0 bg-cover bg-center bg-[url('/images/bourbon-1.jpg')]" />
+        <div className="absolute inset-0 bg-cover bg-center bg-[url('/images/Vista_Montain.jpg')]" />
         <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,7,4,0.2) 0%, rgba(10,7,4,0.85) 100%)" }} />
         <div ref={heroRef} className="reveal relative z-10 px-6 md:px-20 pb-16 max-w-[800px]">
           <p className="text-[10px] font-medium tracking-[0.3em] uppercase text-gold mb-4 flex items-center gap-3">
