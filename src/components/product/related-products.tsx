@@ -29,13 +29,12 @@ export function RelatedProducts({ products }: { products: Product[] }) {
                 </p>
                 <h3 className="font-display text-xl font-medium text-ink mb-1">{p.name}</h3>
                 <p className="font-display text-xs italic text-brown-light mb-3">{p.variety}</p>
-                <div className="flex flex-wrap gap-1.5 mb-3.5">
-                  {p.notes.slice(0, 3).map((n) => (
-                    <span key={n} className="text-[11px] px-2.5 py-0.5 border border-cream-3 text-brown">
-                      {n}
-                    </span>
-                  ))}
-                </div>
+              
+
+                <p className="text-[11px] font-light text-brown leading-[1.7] italic mb-3.5">
+                  {p.notes.join(", ")}.
+                </p>
+                
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-display text-lg text-ink">
