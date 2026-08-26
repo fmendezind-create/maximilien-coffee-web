@@ -235,7 +235,7 @@ export function OrigenClient() {
         <div ref={ctaRef} className="reveal max-w-[560px] mx-auto">
           <p className="text-[10px] font-medium tracking-[0.28em] uppercase text-gold mb-4">Alma de Café</p>
           <h2 id="cta-title" className="font-display font-normal text-ink mb-5" style={{ fontSize: "clamp(26px,3vw,40px)" }}>
-            Prueba el café<br /><em className="italic text-brown">que lo hace posible</em>
+            Prueba el alma<br /><em className="italic text-brown">del café</em>
           </h2>
           <p className="text-[14px] font-light text-brown-light leading-[1.85] mb-8">
             Tostado con precisión. Entregado con rapidez.
