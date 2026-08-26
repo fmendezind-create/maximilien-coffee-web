@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: "%s | Maximilien Coffee",
   },
   description:
-    "Café colombiano de especialidad con origen único en Santa María, Huila. Bourbon Rosado 92 pts SCA, Variedad Colombia 87 pts, Blend 82 pts. Tostado fresco. Envío a toda Colombia.",
+    "Café colombiano de especialidad con origen único en Santa María, Huila. Bourbon Rosado 92 pts SCA, Variedad Colombia 87 pts, Blend 82 pts. Tostado de especialidad. Envío a toda Colombia.",
   keywords: [
     "café de especialidad Colombia",
     "café especialidad Huila",
