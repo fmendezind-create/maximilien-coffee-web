@@ -48,8 +48,8 @@ export function TrustBar() {
               <path d="M6 20h20M8 24h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
             </svg>
           }
-          text="Tostado fresco"
-          sub="Máximo 7 días antes"
+          text="Tostado de especialidad"
+          sub="Tostión precisa para cada variedad"
         />
 
         <TrustItem
