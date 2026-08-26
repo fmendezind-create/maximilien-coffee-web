@@ -13,7 +13,7 @@ export function Origin() {
     >
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: "url(/images/origin-bg.svg)" }}
+        style={{ backgroundImage: "url(/images/Vista_Farm.webp)" }}
         aria-hidden="true"
       />
       <div
