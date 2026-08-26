@@ -186,7 +186,7 @@ export function AdminClient() {
   async function login() {
     setLoading(true); setError("");
     try {
-      if (key !== "mc-admin-2025") throw new Error("Llave incorrecta");
+      if (key !== "FER202607me*") throw new Error("Llave incorrecta");
       await api("stats");
       setAuthed(true);
     } catch {
