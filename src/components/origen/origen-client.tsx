@@ -69,7 +69,7 @@ export function OrigenClient() {
             Donde el alma<br /><em className="italic text-gold-light">del café nace</em>
           </h1>
           <p className="text-[15px] font-light leading-[1.85] text-cream/60 max-w-[520px]">
-            A 2.000 metros sobre el nivel del mar, entre el Macizo Colombiano y el río Magdalena, nace el café que alcanza 92 puntos SCA. No es suerte. Es terruño.
+            A 2.000 metros sobre el nivel del mar, entre el Macizo Colombiano y el río Magdalena, nace el café que alcanza 92 puntos SCA. No es suerte. Es tradición.
           </p>
         </div>
       </section>
