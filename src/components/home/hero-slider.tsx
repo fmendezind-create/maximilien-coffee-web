@@ -6,7 +6,7 @@ import Image from "next/image";
 
 const SLIDES = [
   {
-    image: "/images/bourbon-main.jpg",
+    image: "/images/Bourbon_1.webp",
     eyebrow: "Origen exclusivo · Huila, Colombia",
     title: "El alma del café",
     titleEm: "colombiano",
@@ -16,7 +16,7 @@ const SLIDES = [
     accent: "#C8A84A",
   },
   {
-    image: "/images/colombia-main.jpg",
+    image: "/images/Colombia_1.webp",
     eyebrow: "Variedad Colombia · Proceso Natural",
     title: "Sofisticado,",
     titleEm: "complejo",
@@ -26,7 +26,7 @@ const SLIDES = [
     accent: "#8B1A1A",
   },
   {
-    image: "/images/blend-main.jpg",
+    image: "/images/Blend_1.webp",
     eyebrow: "Blend · Proceso Lavado",
     title: "El favorito",
     titleEm: "de siempre",
@@ -36,7 +36,7 @@ const SLIDES = [
     accent: "#9B2020",
   },
   {
-    image: "/images/bourbon-2.jpg",
+    image: "/images/Bourbon_2.webp",
     eyebrow: "Tostado de especialidad",
     title: "Fresco del",
     titleEm: "origen",
