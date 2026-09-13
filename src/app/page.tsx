@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Maximilien Coffee — Café de Especialidad del Huila",
     description: "Bourbon Rosado 92 pts SCA. Origen único. Tostado esta semana.",
     url: "https://maximiliencoffee.com",
-    images: [{ url: "/images/bourbon-main.jpg", width: 1200, height: 630 }],
+    images: [{ url: "/images/Bourbon_1.webp", width: 1200, height: 630 }],
   },
 };
 
