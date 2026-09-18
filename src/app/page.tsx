@@ -7,6 +7,7 @@ import { TrustBar } from "@/components/home/trust-bar";
 import { Collection } from "@/components/home/collection";
 import { Origin } from "@/components/home/origin";
 import { BaristaCTA } from "@/components/home/barista-cta";
+import { ComboSeason } from "@/components/home/combo-season";
 
 export const metadata: Metadata = {
   title: "Maximilien Coffee — Café de Especialidad del Huila, Colombia",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     title: "Maximilien Coffee — Café de Especialidad del Huila",
     description: "Bourbon Rosado 92 pts SCA. Origen único. Tostado esta semana.",
     url: "https://maximiliencoffee.com",
-    images: [{ url: "/images/Bourbon_1.webp", width: 1200, height: 630 }],
+    images: [{ url: "/images/bourbon-main.jpg", width: 1200, height: 630 }],
   },
 };
 
@@ -67,6 +68,7 @@ export default function HomePage() {
       <main>
         <HeroSlider />
         <TrustBar />
+        <ComboSeason />
         <Collection />
         <Origin />
         <BaristaCTA />
