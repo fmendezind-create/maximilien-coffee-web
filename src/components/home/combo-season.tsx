@@ -19,7 +19,7 @@ const COMBO = {
   price: 99000,
   originalPrice: 114700,
   savings: "14%",
-  cta: { label: "Pedir ahora", href: "/cafes" },
+  cta: { label: "Pedir ahora", href: "/cafes/combo-navidad" },
   ctaSecondary: { label: "Personalizar", href: "https://wa.me/573001234567" },
   image: "/images/Combo_1.webp",
   accent: "#C8A84A",
